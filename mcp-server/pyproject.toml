@@ -1,0 +1,89 @@
+[project]
+name = "exasol-mcp-server"
+version = "0.1.0"
+requires-python = ">=3.10,<4.0"
+description = "Exasol MCP Server"
+authors = [
+    {name = "Mikhail Beck", email = "mikhail.beck@exasol.com"},
+]
+readme = "README.md"
+license = "MIT"
+keywords = ['exasol', 'MCP server']
+dynamic = ["dependencies"]
+
+[project.scripts]
+exasol-mcp-server = "exasol.ai.mcp.server.mcp_server:main"
+
+[tool.poetry]
+requires-poetry = ">=2.1.0"
+packages = [
+    { include = "exasol" },
+]
+
+[poetry.urls]
+repository = "https://github.com/exasol/mcp-server"
+homepage = "https://github.com/exasol/mcp-server"
+
+[tool.poetry.dependencies]
+fastmcp = "^2.10.4"
+pyexasol = "^0.27.0"
+sqlglot = "^27.2.0"
+langgraph = "^0.6.3"
+typing-extensions = "^4.14.1"
+openai = "^1.99.1"
+cryptography = "^45.0.6"
+pandas = "^2.3.1"
+langchain-openai = "^0.3.30"
+tabulate = "^0.9.0"
+
+[tool.poetry.group.dev.dependencies]
+exasol-toolbox = "^1.6.1"
+pytest-exasol-extension = "^0.2.3"
+
+[build-system]
+requires = ["poetry-core>=2.0.0"]
+build-backend = "poetry.core.masonry.api"
+
+[tool.coverage.run]
+relative_files = true
+source = [
+    "exasol",
+]
+
+[tool.coverage.report]
+fail_under = 15
+
+[tool.black]
+line-length = 88
+verbose = false
+include = "\\.pyi?$"
+
+[tool.isort]
+profile = "black"
+force_grid_wrap = 2
+
+[tool.pylint.master]
+fail-under = 5.0
+output-format = "colorized,json:.lint.json,text:.lint.txt"
+ignore-paths = [
+    ".*/test/.*",
+]
+
+[tool.pylint.format]
+max-line-length = 88
+max-module-lines = 800
+
+[tool.mypy]
+ignore_errors = true
+
+[[tool.mypy.overrides]]
+module = [
+    "test.*",
+]
+ignore_errors = true
+
+[tool.sonar]
+projectKey = "exasol.com:mcp-server"
+hostUrl = "https://sonarcloud.io"
+organization = "exasol"
+exclusions = "exasol/ai/mcp/server/version.py"
