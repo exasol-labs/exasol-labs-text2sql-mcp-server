@@ -18,6 +18,22 @@ For DATE extractions use the following code snippets:
 
 Do not use 'YEAR', 'year', 'MONTH', 'month' as column alias
 
+For Date or Time Differences use the following functions:
+
+- DAYS_BETWEEN
+- HOURS_BETWEEN
+- MINUTES_BETWEEN
+- SECONDS_BETWEEN
+
+Updated Instructions for Date Parsing:
+
+- Parse all dates provided in the content.
+- Compare dates to each others
+- The younger date is the second argument in Date function
+
+
+
+
 Always embedd numbers (integers, int, float, double) in single quotes.
         
 Use the following schema: {db_schema}:

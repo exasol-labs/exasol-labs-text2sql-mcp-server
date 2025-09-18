@@ -36,11 +36,17 @@ from exasol.ai.mcp.server.text_to_sql_option.utils.load_prompts import load_tran
 from exasol.ai.mcp.server.text_to_sql_option.utils.load_prompts import load_render_prompt
 
 
+#########################
+## Get the environment ##
+#########################
+
+env = get_environment()
+
+
 ########################
 ## Set-Up Logging     ##
 ########################
 
-env = get_environment()
 LOGGING = env['logger']
 LOGGING_MODE = env['logger_mode']
 
@@ -81,8 +87,6 @@ def t2s_check_relevance(state: GraphState) -> str:
 
     set_logging_label(logging=LOGGING, logger=logger, label="----- t2s_check_relevance -----")
     start_time = time.time()
-
-    env = get_environment()
 
     system_prompt = f"""
     You are an assistant that checks if the given human question: 
@@ -152,8 +156,6 @@ def t2s_human_language_to_sql(state: GraphState):
 
     state['num_of_attempts'] +=  1
 
-    env = get_environment()
-
     db_schema = state['db_schema']
     schema = t2s_database_schema(db_schema)
 
@@ -206,6 +208,7 @@ def t2s_human_language_to_sql(state: GraphState):
         logger.debug(f"SQL created: \n \n {sql_for_logger} \n\n")
 
     elapsed_time(logging=LOGGING, logger=logger, start_time=start_time, label="Time needed for SQL Creation")
+
     return  state
 
 
@@ -245,13 +248,11 @@ def t2s_execute_query(state: GraphState):
 
     set_logging_label(logging=LOGGING, logger=logger, label="----- t2s_execute_query -----")
 
-    start_time_exa_conn = time.time()
-
-    env = get_environment()
     try:
         start_time_exa_conn = time.time()
         with pyexasol.connect(dsn=env['dsn'], user=env['db_user'], password=env['db_password'], schema=state['db_schema']) as C:
             elapsed_time(logging=LOGGING, logger=logger, start_time=start_time_exa_conn, label="Elapsed Time on Exasol-DB - Create Connection")
+
             start_time_exa_query = time.time()
 
             rows = C.execute(state['sql_statement']).fetchall()
@@ -376,7 +377,6 @@ def t2s_show_answer(state: GraphState):
 
     set_logging_label(logging=LOGGING, logger=logger, label="----- t2s_show_answer -----")
     start_time = time.time()
-    env = get_environment()
 
     result = re.search(r"(\[.*\])", state['query_result'])
     result_set = result.group(0)
@@ -430,8 +430,6 @@ def t2s_info_query_not_relevant(state: GraphState):
 
     system_prompt = "You are a educative assistant who responds in a strict manner!"
     info_message = "The human question and the database schema do not fit together!"
-
-    env = get_environment()
 
     llm = ChatOpenAI(model_name=env["llm_server_sql_transform"],
                      temperature=0.5,
@@ -505,8 +503,6 @@ def t2s_info_unable_query_type(state: GraphState):
     system_prompt = "You are a educative assistant who responds in a strict manner"
     info_message = "Explain: The SQL query type is not allowed."
 
-    env = get_environment()
-
     llm = ChatOpenAI(model_name=env["llm_server_sql_transform"],
                      temperature=0.7,
                      openai_api_base=env["llm_server_url"],
@@ -542,8 +538,6 @@ def t2s_correct_query(state: GraphState):
 
     system_prompt = "You are a correcting assistant and re-write the question, but keep the semantics."
     info_message = f"Rewrite the following question: {state['question']} "
-
-    env = get_environment()
 
     llm = ChatOpenAI(model_name=env["llm_server_sql_transform"],
                      temperature=0.7,
@@ -586,15 +580,6 @@ async def t2s_start_process(state: GraphState):
 
     ## Create a connection to the Exasol database ##
 
-    try:
-        exa_connection = pyexasol.connect(dsn=env['dsn'], user=env['db_user'], password=env['db_password'],
-                                      schema=state['db_schema'])
-    except ExaConnectionError as ece:
-        logger.error(f"Can not connect to Exasol database {ece} ")
-        exit()
-    except ExaAuthError as eae:
-        logger.error(f"Can not authorize against Exasol Database")
-        exit()
     total_start_time = time.time()
 
     set_logging_label(logging=LOGGING, logger=logger, label="########## Begin of Translation Process ##########")
