@@ -1,5 +1,7 @@
 
 import pyexasol
+from sqlglot import exp, parse_one
+from sqlglot.errors import ParseError
 import sys
 
 from exasol.ai.mcp.server.text_to_sql_option.utils.helpers import get_environment
@@ -47,6 +49,24 @@ def t2s_database_schema(db_schema: str) -> str:
             schema_metadata += "\t - " + row[2] + ": " + row[3] + '  ::  ' + comment + "\n"
             old_table = table
 
-    print("schema_metadata", file=sys.stderr)
-
     return schema_metadata
+
+#######################################################
+## Is the execution of the SQL statement permissible ##
+##---------------------------------------------------##
+## Currently, only 'SELECT' statements are permitted ##
+#######################################################
+
+def get_sql_query_type(query: str) -> bool:
+    """
+    Verifies that the query is a valid SELECT query.
+    Declines any other types of statements including the SELECT INTO.
+    """
+
+    try:
+        ast = parse_one(query, read="exasol")
+        if isinstance(ast, exp.Select):
+            return "into" not in ast.args
+        return False
+    except ParseError:
+        return False

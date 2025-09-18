@@ -1,0 +1,101 @@
+[project]
+name = "exasol-mcp-server"
+version = "1.0.0"
+requires-python = ">=3.10,<=3.13"   # Restriction is due to numpy
+description = "Exasol MCP Server"
+authors = [
+    {name = "Mikhail Beck", email = "mikhail.beck@exasol.com"},
+    {name = "Dirk Beerbohm (Text-to-SQL)", email = "dirk.beerbohm@exasol.com"},
+]
+readme = "README.md"
+license = "MIT"
+keywords = ['exasol', 'MCP server', 'Text-to-SQL']
+dynamic = ["dependencies"]
+dependencies = [
+    "chromadb>=1.0.20",
+    "cryptography>=45.0.7",
+    "fastmcp>=2.12.2",
+    "langchain>=0.3.27",
+    "langchain-openai>=0.3.32",
+    "langgraph>=0.6.7",
+    "loguru>=0.7.3",
+    "pyexasol>=1.1.0",
+    "rank-bm25>=0.2.2",
+    "sql-formatter>=0.6.2",
+    "sqlglot>=27.13.2",
+    "stopwords>=1.0.2",
+]
+
+[project.scripts]
+exasol-mcp-server = "exasol.ai.mcp.server.main:main"
+
+[tool.poetry]
+requires-poetry = ">=2.1.0"
+packages = [
+    { include = "exasol" },
+]
+
+[poetry.urls]
+repository = "https://github.com/exasol/mcp-server"
+homepage = "https://github.com/exasol/mcp-server"
+
+[tool.poetry.dependencies]
+fastmcp = "^2.10.4"
+pyexasol = "^0.27.0"
+sqlglot = "^27.2.0"
+numpy = ">=2,<=2.2.0"
+stopwords = "^1.0.1"
+rank-bm25 = "^0.2.2"
+
+[tool.poetry.group.dev.dependencies]
+exasol-toolbox = "^1.6.1"
+pytest-exasol-extension = "^0.2.3"
+exasol-integration-test-docker-environment = "<4.3.0"
+
+[build-system]
+requires = ["poetry-core>=2.0.0"]
+build-backend = "poetry.core.masonry.api"
+
+[tool.coverage.run]
+relative_files = true
+source = [
+    "exasol",
+]
+
+[tool.coverage.report]
+fail_under = 15
+
+[tool.black]
+line-length = 88
+verbose = false
+include = "\\.pyi?$"
+
+[tool.isort]
+profile = "black"
+force_grid_wrap = 2
+
+[tool.pylint.master]
+fail-under = 5.0
+output-format = "colorized,json:.lint.json,text:.lint.txt"
+ignore-paths = [
+    ".*/test/.*",
+]
+
+[tool.pylint.format]
+max-line-length = 88
+max-module-lines = 800
+
+[tool.mypy]
+ignore_errors = true
+
+[[tool.mypy.overrides]]
+module = [
+    "test.*",
+]
+ignore_errors = true
+
+[tool.sonar]
+projectKey = "exasol.com:mcp-server"
+hostUrl = "https://sonarcloud.io"
+organization = "exasol"
+exclusions = "exasol/ai/mcp/server/version.py"

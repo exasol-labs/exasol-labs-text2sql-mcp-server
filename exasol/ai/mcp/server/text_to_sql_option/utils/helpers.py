@@ -1,6 +1,6 @@
-
-
-
+from datetime import time
+import time
+import loguru
 from cryptography.fernet import Fernet
 from dotenv import load_dotenv
 import os
@@ -52,7 +52,30 @@ def get_environment() -> dict:
             "llm_server_result_rendering": os.getenv("MCP_OPENAI_SERVER_MODEL_NAME_RENDERING"),
             "vectordb_persistent_storage": os.getenv("MCP_VECTORDB_FILE"),
             "vectordb_similarity_distance": os.getenv("MCP_VECTORDB_SIMILARITY_DISTANCE"),
+            "logger": os.getenv("MCP_EXASOL_LOGGER"),
+            "logger_mode": os.getenv("MCP_EXASOL_LOGGER_MODE").lower(),
+            "logger_destination": os.getenv("MCP_EXASOL_LOGGER_FILE"),
         }
 
     return env
 
+
+##############################################
+## A tiny helper for printing elapsed times ##
+##############################################
+
+def elapsed_time(logging: bool, logger: loguru.logger, start_time, label) -> None:
+
+    if logging:
+        et = time.time() - start_time
+        logger.info(f"{label}: {et:.2f} seconds")
+
+
+#################################
+## A tiny Helper to set labels ##
+#################################
+
+def set_logging_label(logging: bool, logger: loguru.logger, label: str) -> None:
+
+    if logging:
+        logger.info(label)
