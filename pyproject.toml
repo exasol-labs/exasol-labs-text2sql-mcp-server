@@ -1,11 +1,12 @@
 [project]
-name = "exasol-mcp-server"
-version = "1.0.0"
+name = "exasol-mcp-server-w-text-to-sql"
+version = "1.0.1"
 requires-python = ">=3.10,<=3.13"   # Restriction is due to numpy
-description = "Exasol MCP Server"
+description = "Exasol MCP Server with a experimental text-to-SQL option."
 authors = [
-    {name = "Mikhail Beck", email = "mikhail.beck@exasol.com"},
     {name = "Dirk Beerbohm (Text-to-SQL)", email = "dirk.beerbohm@exasol.com"},
+    {name = "Mikhail Beck", email = "mikhail.beck@exasol.com"},
+
 ]
 readme = "README.md"
 license = "MIT"
@@ -27,7 +28,7 @@ dependencies = [
 ]
 
 [project.scripts]
-exasol-mcp-server = "exasol.ai.mcp.server.main:main"
+exasol-mcp-server-w-text-to-sql = "exasol.ai.mcp.server.main:main"
 
 [tool.poetry]
 requires-poetry = ">=2.1.0"
@@ -36,12 +37,12 @@ packages = [
 ]
 
 [poetry.urls]
-repository = "https://github.com/exasol/mcp-server"
-homepage = "https://github.com/exasol/mcp-server"
+repository = "https://github.com/exasol/exasol-labs-text2sql-mcp-server"
+homepage = "https://github.com/exasol/exasol-labs-text2sql-mcp-server"
 
 [tool.poetry.dependencies]
 fastmcp = "^2.10.4"
-pyexasol = "^0.27.0"
+#pyexasol = "^0.27.0"
 sqlglot = "^27.2.0"
 numpy = ">=2,<=2.2.0"
 stopwords = "^1.0.1"

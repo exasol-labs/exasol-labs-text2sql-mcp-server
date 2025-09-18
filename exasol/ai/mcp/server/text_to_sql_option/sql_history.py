@@ -1,7 +1,7 @@
 ##
 ## Added for Text-to-SQL option [DirkB @ Exasol: 2025-09-12]
 ## based on: Exasol MCP Server Version  1.0.0
-###
+##
 
 import chromadb
 
