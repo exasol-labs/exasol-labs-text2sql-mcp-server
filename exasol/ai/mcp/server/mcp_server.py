@@ -35,13 +35,21 @@ from exasol.ai.mcp.server.server_settings import (
 )
 
 
-##
+## ----- Text-to-SQL -----
 ## Added for Text-to-SQL option [DirkB @ Exasol: 2025-09-13]
 ## based on: Exasol MCP Server Version  1.0.0
 ##
 
+from exasol.ai.mcp.server.text_to_sql_option.utils.helpers import set_logging_label
 from exasol.ai.mcp.server.text_to_sql_option.text_to_sql import t2s_start_process
 from exasol.ai.mcp.server.text_to_sql_option.sql_history import text_to_sql_history
+from exasol.ai.mcp.server.text_to_sql_option.intro.intro import (
+    env,
+    GraphState,
+    logger,
+    LOGGING,
+    LOGGING_MODE
+)
 
 TABLE_USAGE = (
     "In an SQL query, the names of database objects, such as schemas, "
@@ -297,12 +305,9 @@ class ExasolMCPServer(FastMCP):
         """
         Starts the transformation process...
         """
-
-        print(" ", file=sys.stderr)
-        print(" ", file=sys.stderr)
-        print(f"### Starting Text-to-SQL  (mcp_server.py): {db_schema} : {question}", file=sys.stderr)
-        print(" ", file=sys.stderr)
-        print(" ", file=sys.stderr)
+        set_logging_label(logging=LOGGING, logger=logger, label="##### Starting Text-to-SQL")
+        set_logging_label(logging=LOGGING, logger=logger, label=f"### Database schema: {db_schema}")
+        set_logging_label(logging=LOGGING, logger=logger, label=f"### DQuestion: {question}")
 
         state['question'] = str(question)
         state['db_schema'] = db_schema
@@ -315,7 +320,7 @@ class ExasolMCPServer(FastMCP):
                             search_text: Annotated[str, Field(description="Search Text in question metadata field'", default="*")],
                             db_schema: Annotated[str, Field(description="Name of Database Schema", default="*")],
                             number_results: Annotated[int, Field(description="Number of records returned", default=5)],
-                            ) -> Any:
+                            ):
 
         result = text_to_sql_history(search_text=search_text, db_schema=db_schema, number_results=number_results)
 
