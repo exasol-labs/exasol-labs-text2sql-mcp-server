@@ -300,7 +300,7 @@ class ExasolMCPServer(FastMCP):
 
         print(" ", file=sys.stderr)
         print(" ", file=sys.stderr)
-        print(f"### Starting Text-to-SQL (mcp_server.py): {db_schema} : {question}", file=sys.stderr)
+        print(f"### Starting Text-to-SQL  (mcp_server.py): {db_schema} : {question}", file=sys.stderr)
         print(" ", file=sys.stderr)
         print(" ", file=sys.stderr)
 
