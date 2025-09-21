@@ -1,3 +1,5 @@
+
+
 import importlib.resources
 
 def load_translation_prompt(db_schema: str, schema: str) -> str:

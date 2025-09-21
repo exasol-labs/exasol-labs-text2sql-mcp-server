@@ -1,8 +1,8 @@
 
 import pyexasol
+
 from sqlglot import exp, parse_one
 from sqlglot.errors import ParseError
-import sys
 
 from exasol.ai.mcp.server.text_to_sql_option.utils.helpers import get_environment
 

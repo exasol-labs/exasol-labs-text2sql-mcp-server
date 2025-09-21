@@ -304,7 +304,7 @@ class ExasolMCPServer(FastMCP):
         print(" ", file=sys.stderr)
         print(" ", file=sys.stderr)
 
-        state['question'] = question
+        state['question'] = str(question)
         state['db_schema'] = db_schema
 
         state = t2s_start_process(state)

@@ -4,17 +4,17 @@
 ##
 
 import chromadb
+import datetime
+import sys
 
 from pydantic import BaseModel, Field
 
-import sys
-
 from exasol.ai.mcp.server.text_to_sql_option.utils.helpers import get_environment
+
+
 ##
 ## Add-On: Retrieve the past SQL Statements stored by the user for reference.
 ##
-
-import datetime
 
 class SqlHistory(BaseModel):
     sql_history: str = Field(

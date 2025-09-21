@@ -87,6 +87,13 @@ any other LLM server application which supports the OpenAI API.
 
 ## Installation
 
+### Remark
+
+Do not configure the Exasol supported MCP server and this MCP server at the same time within the  
+AI tool of your choice. This MCP server will use the same version numbers as the officially  
+supported Exasol MCP-Server. Equal version numbers indicate the same functionality, plus the  
+Text-to-SQL option.
+
 Ensure the `uv` package is installed. If uncertain call
 ```bash
 uv --version
@@ -94,16 +101,12 @@ uv --version
 To install `uv`, please follow [the instructions](https://docs.astral.sh/uv/getting-started/installation/)
 in the `uv` official documentation.
   
+Depending on the AI Desktop application or Frontend there are two different installation methods,
+one with a configuration that calls the MCP-Server directly, the second option requires a 
+so-called proxy server.
 
-### Remark
 
-Do not configure the Exasol supported MCP server and this MCP server at the same time within the  
-AI Desktop tool of your choice. This MCP server will use the same version numbers as the officially  
-supported Exasol MCP-Server. Equal version numbers indicate the same functionality, plus the  
-Text-to-SQL option.  
-  
-
-## Using the server with the Claude Desktop (and probably others).
+### Using the server with the Claude Desktop (and probably others).
 
 To enable the Claude Desktop using the Exasol MCP server, the latter must be listed
 in the configuration file `claude_desktop_config.json`.
@@ -120,11 +123,12 @@ example.
   "mcpServers": {
     "exasol_db": {
       "command": "uvx",
-      "args": ["exasol-mcp-server"],
+      "args": ["--from exasol-mcp-server-t2s exasol-mcp-server"],
       "env": {
-        "EXA_DSN": "demodb.exasol.com:8563",
+        "EXA_DSN": "exasol-server-hostname:8563",
         "EXA_USER": "my-user-name",
-        "EXA_PASSWORD": "my-password"
+        "EXA_PASSWORD": "my-password",
+        "EXA_MCP_SETTINGS": "path-to-your-settings-file (see below)"
       }
     },
     "other_server": {}
@@ -138,6 +142,23 @@ ephemeral environment, using the default `uv` parameters and default server sett
 Other AI Desktop applications may use the same syntax to configure MCP servers.  
 Consult  the documentation of the respective AI Desktop application for detailed   
 information about configuring the MCP server.
+
+### Using the server via OPenAPI interface
+
+First, install the prox server with
+
+```
+pip install mcpo
+```
+
+and start the proxy server 
+
+```
+mcpo --port 8000 --env EXA_DSN=<database-dsn> --env EXA_USER=<database-username> --env EXA_PASSWORD=<user-password> --env EXA_MCP_SETTINGS=<path-to-settings-file>
+-- uvx --from exasol-mcp-server-t2s exasol-mcp-server
+```
+
+Configure you AI application, e.g. Open-WebUI, of choice for the tool server and point him to the proxy server.
 
 ## Configuration settings
 

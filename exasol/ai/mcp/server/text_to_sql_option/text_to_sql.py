@@ -1,77 +1,50 @@
-############################################################
-## Exasol MCP server with Text-to-SQL query option        ##
-##--------------------------------------------------------##
-## Version 0.1 DirkB@Exasol : Initial version             ##
-############################################################
-
-#######################
-## Required Packages ##
-#######################
+##############################################################
+## Exasol MCP server with Text-to-SQL query option          ##
+##----------------------------------------------------------##
+## Version 1.0.0 DirkB@Exasol : Initial version             ##
+##############################################################
 
 import chromadb
-from datetime import datetime
-import time
-from langchain_core.prompts import ChatPromptTemplate
-from langchain_openai import ChatOpenAI
-from langgraph.graph import StateGraph, START, END
-from loguru import logger
-from pydantic import BaseModel, Field
 import pyexasol
-from pyexasol.exceptions import ExaConnectionError, ExaAuthError
-from pyexasol import ExaConnection, ExaError
 import re
+import time
+
+from datetime import datetime
+from langgraph.graph import StateGraph, START, END
+from pydantic import BaseModel, Field
+from pyexasol import ExaConnection, ExaError
 from sql_formatter.core import format_sql
-import sys
-from typing_extensions import TypedDict
 
 ## Project packages
 
 from exasol.ai.mcp.server.server_settings import ExaDbResult
-from exasol.ai.mcp.server.text_to_sql_option.utils.helpers import get_environment
+from exasol.ai.mcp.server.text_to_sql_option.intro.intro import (
+    env,
+    GraphState,
+    logger,
+    LOGGING,
+    LOGGING_MODE
+)
 from exasol.ai.mcp.server.text_to_sql_option.utils.helpers import elapsed_time
+from exasol.ai.mcp.server.text_to_sql_option.utils.llm import invoke_llm
 from exasol.ai.mcp.server.text_to_sql_option.utils.helpers import set_logging_label
 from exasol.ai.mcp.server.text_to_sql_option.utils.database_functions import t2s_database_schema
 from exasol.ai.mcp.server.text_to_sql_option.utils.database_functions import get_sql_query_type
 from exasol.ai.mcp.server.text_to_sql_option.utils.load_prompts import load_translation_prompt
 from exasol.ai.mcp.server.text_to_sql_option.utils.load_prompts import load_render_prompt
-
-
-#########################
-## Get the environment ##
-#########################
-
-env = get_environment()
-
-
-########################
-## Set-Up Logging     ##
-########################
-
-LOGGING = env['logger']
-LOGGING_MODE = env['logger_mode']
-
-logger.add(sys.stdout, colorize=True, format="<green>{time}</green> <level>{message}</level>", filter="my_module", level="INFO")
-logger.add(env['logger_destination'])
+from exasol.ai.mcp.server.text_to_sql_option.nodes.info_messages_llm import (
+    t2s_info_query_not_relevant,
+    t2s_info_unable_query_type,
+    t2s_info_unable_create_sql
+)
+from exasol.ai.mcp.server.text_to_sql_option.nodes.routing import (
+    t2s_check_sql_router,
+    t2s_relevance_router,
+    t2s_sql_valid_router,
+    t2s_max_tries_router
+)
 
 exa_connection: ExaConnection = None
-
-#######################################################
-## Working status of Text2SQL transformation process ##
-#######################################################
-
-class GraphState(TypedDict):
-    question: str                 # The natural language question
-    db_schema: str                # The database schema to be used
-    sql_statement: str            # The generated SQL statement
-    query_num_rows: int           # The number of rows returned
-    query_result: str             # The result of the generated SQL statement
-    display_result: str           # The transformed result into a visual version
-    num_of_attempts: int          # The number of attempts to generate a valid SQL statement
-    is_allowed: str               # Is the generated SQL statement allowed (READ-ONLY, currently)
-    is_relevant: str              # Does the natural language fit to the underlying database schema
-    sql_is_valid: str             # SQL statements accepted by the Exasol database
-    sql_error: str                # The SQL error returned by the Exasol database, if any
-    info: str                     # Additional INFO field
 
 
 ##################################################################
@@ -100,22 +73,13 @@ def t2s_check_relevance(state: GraphState) -> str:
     Answer with "YES" if question relates to the given schema, otherwise answer with "NO", only!
     """
 
-    llm = ChatOpenAI(model_name=env["llm_server_model_check"],
-                     temperature=0.0,
-                     openai_api_base=env["llm_server_url"],
-                     openai_api_key=env["llm_server_api_token"])
-
-    question = state['question']
-
-    t2s_prompt = ChatPromptTemplate.from_messages(
-        [
-            ("system", system_prompt),
-            ("user", "Question: {question}"),
-        ]
-    )
-    structured_llm = llm.with_structured_output(CheckIsRelevant)
-    is_relevant_checker = t2s_prompt | structured_llm
-    result = is_relevant_checker.invoke({"question": question})
+    result = invoke_llm(base=env["llm_server_url"],
+                                      api=env["llm_server_api_token"],
+                                      model=env["llm_server_model_check"],
+                                      temperature=0.0,
+                                      prompt=system_prompt,
+                                      query=state['question'],
+                                      output=CheckIsRelevant)
 
     state['is_relevant'] = result.is_relevant
 
@@ -125,18 +89,6 @@ def t2s_check_relevance(state: GraphState) -> str:
     elapsed_time(logging=LOGGING, logger=logger, start_time=start_time, label="Time needed for Relevance test" )
 
     return state
-
-
-########################################################################
-## Route workflow to the right path depending on determined relevance ##
-########################################################################
-
-def t2s_relevance_router(state: GraphState) -> str:
-
-    if state['is_relevant'].upper() == "YES":
-        return "YES"
-    else:
-        return "NO"
 
 
 #############################################################################
@@ -184,23 +136,14 @@ def t2s_human_language_to_sql(state: GraphState):
     if LOGGING == 'True' and LOGGING_MODE == 'debug':
         logger.debug(f"System-Prompt for translation: {system_prompt}")
 
+    result = invoke_llm(base=env["llm_server_url"],
+                        api=env["llm_server_api_token"],
+                        model=env["llm_server_model_check"],
+                        temperature=0.0,
+                        prompt=system_prompt,
+                        query=state['question'],
+                        output=TransformIntoSql)
 
-    llm = ChatOpenAI(model_name=env["llm_server_sql_transform"],
-                     temperature = 0.0,
-                     openai_api_base=env["llm_server_url"],
-                     openai_api_key=env["llm_server_api_token"]).with_structured_output(TransformIntoSql)
-
-    question = state['question']
-
-    t2s_prompt = ChatPromptTemplate.from_messages(
-        [
-            ( "system", system_prompt),
-            ( "user", "Question: {question}" ),
-        ]
-    )
-
-    sql_process = t2s_prompt | llm
-    result = sql_process.invoke({"question": question})
     state["sql_statement"] = result.sql_query
 
     if LOGGING == 'True' and LOGGING_MODE == 'debug':
@@ -227,18 +170,6 @@ def t2s_check_sql_is_allowed(state: GraphState):
 
     return state
 
-
-def t2s_check_sql_router(state: GraphState):
-
-    if get_sql_query_type(state["sql_statement"]):
-        state['is_allowed'] = "YES"
-    else:
-        state['is_allowed'] = "NO"
-
-    if LOGGING == 'True' and LOGGING_MODE == 'debug':
-        logger.debug(f"SQL-ALLOWED: {state['is_allowed']}")
-
-    return state['is_allowed']
 
 #######################
 ## Execute the query ##
@@ -313,8 +244,6 @@ def t2s_execute_query(state: GraphState):
                 if LOGGING == 'True' and LOGGING_MODE == 'debug':
                     logger.debug("STEP: Vector-DB-SQL initially written")
 
-            if not tmp["distances"] or not tmp["distances"][0]:
-                pass
             elif float(tmp["distances"][0][0]) > 0.0001:
 
                     new_idx = sql_collection.count() + 1
@@ -355,13 +284,6 @@ def t2s_check_sql_valid(state: GraphState):
 
     return state
 
-def t2s_sql_valid_router(state: GraphState) -> str:
-
-    if state['sql_is_valid'].upper() == "YES":
-        return "YES"
-    else:
-        return "NO"
-
 
 ##################################################
 ## Post-Processing of the SQL execution process ##
@@ -371,7 +293,6 @@ class DisplayResult(BaseModel):
     display_result: str = Field(
         description="The result set converted into a nice and shiny table in MARKDOWN syntax."
     )
-
 
 def t2s_show_answer(state: GraphState):
 
@@ -394,130 +315,17 @@ def t2s_show_answer(state: GraphState):
         logger.debug(f"System-Prompt: \n \n {system_prompt} \n\n")
         logger.debug(f"Question:: \n \n {question} \n\n")
 
-    llm = ChatOpenAI(model_name=env["llm_server_result_rendering"],
-                     temperature=0.0,
-                     openai_api_base=env["llm_server_url"],
-                     openai_api_key=env["llm_server_api_token"]).with_structured_output(DisplayResult)
+    result = invoke_llm(base=env["llm_server_url"],
+                        api=env["llm_server_api_token"],
+                        model=env["llm_server_model_check"],
+                        temperature=0.0,
+                        prompt=system_prompt,
+                        query=state['question'],
+                        output=DisplayResult)
 
-    t2s_prompt = ChatPromptTemplate.from_messages(
-        [
-            ( "system", system_prompt),
-            ( "user", "Question: {question}" ),
-        ]
-    )
-
-    render_process = t2s_prompt | llm
-    result = render_process.invoke({"question": question})
     state["display_result"] = str(result.display_result)
 
     elapsed_time(logging=LOGGING, logger=logger, start_time=start_time, label="Time needed for rendering answer")
-
-    return state
-
-
-###############################################################################################
-## Inform user that query seems to be not relevant / does not fit to desired database schema ##
-###############################################################################################
-
-class BadRelevanceAnswer(BaseModel):
-    info_about_relevance: str = Field(
-        description="Informing the user about question and database schema mismatch"
-    )
-
-def t2s_info_query_not_relevant(state: GraphState):
-
-    set_logging_label(logging=LOGGING, logger=logger, label="----- t2s_info_query_not_relevant -----")
-
-    system_prompt = "You are a educative assistant who responds in a strict manner!"
-    info_message = "The human question and the database schema do not fit together!"
-
-    llm = ChatOpenAI(model_name=env["llm_server_sql_transform"],
-                     temperature=0.5,
-                     openai_api_base=env["llm_server_url"],
-                     openai_api_key=env["llm_server_api_token"]).with_structured_output(BadRelevanceAnswer)
-
-    t2s_prompt = ChatPromptTemplate.from_messages(
-        [
-            ("system", system_prompt),
-            ("user", "Question: {{info_message}}"),
-        ]
-    )
-
-    info_generator = t2s_prompt | llm
-    result = info_generator.invoke({"question": info_message})
-    state["info"] = result.info_about_relevance
-
-    return state
-
-
-##############################################################################################
-## Inform user that the text-to-sql tool cannot create a valid SQL statement in 3 attempts. ##
-##############################################################################################
-
-class UnableCreateSQL(BaseModel):
-    info_unable_create_sql: str = Field(
-        description="Informing the user that the text-to-sql tool cannot create a valid SQL statement"
-    )
-
-def t2s_info_unable_create_sql(state: GraphState):
-
-    set_logging_label(logging=LOGGING, logger=logger, label="----- t2s_info_unable_create_sql -----")
-
-    system_prompt = "You are a educative assistant who responds in a strict manner."
-    info_message = "Text-to-SQL tool cannot create a valid SQL statement, explain the SQL dialect does not work."
-
-    env = get_environment()
-
-    llm = ChatOpenAI(model_name=env["llm_server_sql_transform"],
-                     temperature=0.7,
-                     openai_api_base=env["llm_server_url"],
-                     openai_api_key=env["llm_server_api_token"]).with_structured_output(UnableCreateSQL)
-
-    t2s_prompt = ChatPromptTemplate.from_messages(
-        [
-            ("system", system_prompt),
-            ("user", "Question: {{info_message}}"),
-        ]
-    )
-
-    info_generator = t2s_prompt | llm
-    result = info_generator.invoke({"question": info_message})
-    state["info"] = result.info_unable_create_sql
-
-    return state
-
-
-##############################################################################
-## Inform user that (currently) on 'SELECT' (READ-ONLY) queries are allowed ##
-##############################################################################
-
-class SQLTypeNotAllowed(BaseModel):
-    info_about_bad_sql_type: str = Field(
-        description="Informing the user that the type of the SQL statement is not allowed."
-    )
-
-def t2s_info_unable_query_type(state: GraphState):
-
-    set_logging_label(logging=LOGGING, logger=logger, label="----- t2s_info_unable_query_type -----")
-
-    system_prompt = "You are a educative assistant who responds in a strict manner"
-    info_message = "Explain: The SQL query type is not allowed."
-
-    llm = ChatOpenAI(model_name=env["llm_server_sql_transform"],
-                     temperature=0.7,
-                     openai_api_base=env["llm_server_url"],
-                     openai_api_key=env["llm_server_api_token"]).with_structured_output(SQLTypeNotAllowed)
-
-    t2s_prompt = ChatPromptTemplate.from_messages(
-        [
-            ("system", system_prompt),
-            ("user", "Question: {{info_message}}"),
-        ]
-    )
-
-    info_generator = t2s_prompt | llm
-    result = info_generator.invoke({"question": info_message})
-    state["info"] = result.info_about_bad_sql_type
 
     return state
 
@@ -526,7 +334,7 @@ def t2s_info_unable_query_type(state: GraphState):
 ## Rewriting the question to try a new SQL translation ##
 #########################################################
 
-class NewVersionOfQuestion(BaseModel):
+class NewVariantOfQuestion(BaseModel):
     new_question: str = Field(
         description="Reformulated Question to gain a valid SQL transformation."
     )
@@ -539,31 +347,20 @@ def t2s_correct_query(state: GraphState):
     system_prompt = "You are a correcting assistant and re-write the question, but keep the semantics."
     info_message = f"Rewrite the following question: {state['question']} "
 
-    llm = ChatOpenAI(model_name=env["llm_server_sql_transform"],
-                     temperature=0.7,
-                     openai_api_base=env["llm_server_url"],
-                     openai_api_key=env["llm_server_api_token"]).with_structured_output(NewVersionOfQuestion)
+    result = invoke_llm(base=env["llm_server_url"],
+                        api=env["llm_server_api_token"],
+                        model=env["llm_server_model_check"],
+                        temperature=0.0,
+                        prompt=system_prompt,
+                        query=info_message,
+                        output=NewVariantOfQuestion)
 
-    t2s_prompt = ChatPromptTemplate.from_messages(
-        [
-            ("system", system_prompt),
-            ("user", "Question: {{info_message}}"),
-        ]
-    )
-
-    info_generator = t2s_prompt | llm
-    result = info_generator.invoke({"question": info_message})
     state["question"] = result.new_question
 
     return state
 
 
-def t2s_max_tries_router(state: GraphState) -> str:
 
-    if state['num_of_attempts'] >= 3:
-        return "YES"
-    else:
-        return "NO"
 
 
 def t2s_check_max_tries(state: GraphState) -> str:
