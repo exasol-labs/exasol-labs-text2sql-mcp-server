@@ -18,7 +18,8 @@
 
 Provides an LLM access to the Exasol database via MCP tools. Includes tools  
 for reading the database metadata and executing data reading queries, and an  
-optional tool for translating natural language into SQL statements for the Exasol database.  
+optional tool for translating natural language into SQL statements for the Exasol  
+database.  
   
 
 ## Disclaimer
