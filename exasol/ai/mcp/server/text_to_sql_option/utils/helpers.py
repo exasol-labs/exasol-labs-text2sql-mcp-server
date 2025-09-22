@@ -1,11 +1,12 @@
-
+###############################
+## A mix of helper functions ##
+###############################
 
 import loguru
 import os
 import time
 
 from cryptography.fernet import Fernet
-#from datetime import time
 from dotenv import load_dotenv
 
 

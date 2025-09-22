@@ -1,4 +1,8 @@
-
+#################################################################################
+## Load the important prompts for translation and rendering from external file ##
+##-----------------------------------------------------------------------------##
+## You can modify the prompt to your needs with touching the code              ##
+#################################################################################
 
 import importlib.resources
 
