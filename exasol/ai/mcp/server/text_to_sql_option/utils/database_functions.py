@@ -3,21 +3,27 @@
 #######################################
 
 import pyexasol
+import time
 
 from sqlglot import exp, parse_one
 from sqlglot.errors import ParseError
 
-from exasol.ai.mcp.server.text_to_sql_option.utils.helpers import get_environment
+from exasol.ai.mcp.server.text_to_sql_option.intro.intro import (
+    env,
+    logger,
+    LOGGING,
+)
+from exasol.ai.mcp.server.text_to_sql_option.utils.helpers import elapsed_time
+
 
 ############################################################
 ## Retrieve the metadata for the required database schema ##
 #############################################################
 
 def t2s_database_schema(db_schema: str) -> str:
-
-    env = get_environment()
-
+    start_time_exa_conn = time.time()
     with pyexasol.connect(dsn=env['dsn'], user=env['db_user'], password=env['db_password'], schema='SYS') as c:
+        elapsed_time(logging=LOGGING, logger=logger, start_time=start_time_exa_conn, label="Elapsed Time on Exasol-DB - Create Connection")
         metadata_query = f"""
             SELECT 
                 COLUMN_SCHEMA,
@@ -33,7 +39,9 @@ def t2s_database_schema(db_schema: str) -> str:
                 COLUMN_SCHEMA, COLUMN_TABLE;
         """
 
+        start_time_exa_query = time.time()
         stmt = c.execute(metadata_query)
+        elapsed_time(logging=LOGGING, logger=logger, start_time=start_time_exa_query, label="Elapsed Time on Exasol-DB - Retrieve Database Schema")
 
         schema_metadata = ""
         table, old_table = "", ""

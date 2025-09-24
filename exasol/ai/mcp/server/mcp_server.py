@@ -289,7 +289,7 @@ class ExasolMCPServer(FastMCP):
         raise ValueError("The query is invalid or not a SELECT statement.")
 
 
-    ##
+    ## ----- Text-to-SQL -----
     ## Added for Text-to-SQL option [DirkB @ Exasol: 2025-09-12]
     ## based on: Exasol MCP Server Version  1.0.0
     ##
@@ -307,9 +307,9 @@ class ExasolMCPServer(FastMCP):
         """
         set_logging_label(logging=LOGGING, logger=logger, label="##### Starting Text-to-SQL")
         set_logging_label(logging=LOGGING, logger=logger, label=f"### Database schema: {db_schema}")
-        set_logging_label(logging=LOGGING, logger=logger, label=f"### DQuestion: {question}")
+        set_logging_label(logging=LOGGING, logger=logger, label=f"### Question: {question}")
 
-        state['question'] = str(question)
+        state['question'] = question
         state['db_schema'] = db_schema
 
         state = t2s_start_process(state)

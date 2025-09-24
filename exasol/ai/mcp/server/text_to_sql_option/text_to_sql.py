@@ -59,7 +59,9 @@ class CheckIsRelevant(BaseModel):
 def t2s_check_relevance(state: GraphState) -> str:
 
     set_logging_label(logging=LOGGING, logger=logger, label="----- t2s_check_relevance -----")
-    start_time = time.time()
+    start_time_relevance_test = time.time()
+
+    schema = t2s_database_schema(db_schema=state['db_schema'])
 
     system_prompt = f"""
     You are an assistant that checks if the given human question: 
@@ -68,11 +70,11 @@ def t2s_check_relevance(state: GraphState) -> str:
     
     relates to the following database schema
     
-    {state['db_schema']}
+    {schema}
     
     Answer with "YES" if question relates to the given schema, otherwise answer with "NO", only!
     """
-
+    start_time_relevance_test = time.time()
     result = invoke_llm(base=env["llm_server_url"],
                                       api=env["llm_server_api_token"],
                                       model=env["llm_server_model_check"],
@@ -80,13 +82,12 @@ def t2s_check_relevance(state: GraphState) -> str:
                                       prompt=system_prompt,
                                       query=state['question'],
                                       output=CheckIsRelevant)
+    elapsed_time(logging=LOGGING, logger=logger, start_time=start_time_relevance_test, label="Time needed for Relevance test")
 
     state['is_relevant'] = result.is_relevant
 
     if LOGGING == 'True' and LOGGING_MODE == 'debug':
         logger.debug(f"RESULT: {result.is_relevant}")
-
-    elapsed_time(logging=LOGGING, logger=logger, start_time=start_time, label="Time needed for Relevance test" )
 
     return state
 
@@ -104,14 +105,14 @@ def t2s_human_language_to_sql(state: GraphState):
 
     set_logging_label(logging=LOGGING, logger=logger, label="----- t2s_human_language_to_sql -----")
 
-    start_time = time.time()
-
     state['num_of_attempts'] +=  1
 
     db_schema = state['db_schema']
+
     schema = t2s_database_schema(db_schema)
 
     system_prompt = load_translation_prompt(db_schema=db_schema, schema=schema)
+    system_prompt_length = len(system_prompt)
 
     ##
     ## Check VectorDB for a similar question and SQL Statement,
@@ -136,6 +137,8 @@ def t2s_human_language_to_sql(state: GraphState):
     if LOGGING == 'True' and LOGGING_MODE == 'debug':
         logger.debug(f"System-Prompt for translation: {system_prompt}")
 
+
+    start_time_llm = time.time()
     result = invoke_llm(base=env["llm_server_url"],
                         api=env["llm_server_api_token"],
                         model=env["llm_server_model_check"],
@@ -144,13 +147,17 @@ def t2s_human_language_to_sql(state: GraphState):
                         query=state['question'],
                         output=TransformIntoSql)
 
+
+
+    elapsed_time(logging=LOGGING, logger=logger, start_time=start_time_llm, label=f"Time needed for SQL Creation (Prompt-Length: {system_prompt_length})")
+
     state["sql_statement"] = result.sql_query
 
     if LOGGING == 'True' and LOGGING_MODE == 'debug':
         sql_for_logger = format_sql(result.sql_query)
         logger.debug(f"SQL created: \n \n {sql_for_logger} \n\n")
 
-    elapsed_time(logging=LOGGING, logger=logger, start_time=start_time, label="Time needed for SQL Creation")
+
 
     return  state
 
@@ -297,13 +304,13 @@ class DisplayResult(BaseModel):
 def t2s_show_answer(state: GraphState):
 
     set_logging_label(logging=LOGGING, logger=logger, label="----- t2s_show_answer -----")
-    start_time = time.time()
+
 
     result = re.search(r"(\[.*\])", state['query_result'])
     result_set = result.group(0)
 
-    schema = t2s_database_schema(state['db_schema'])
-    system_prompt = load_render_prompt(db_schema=state['db_schema'], schema=schema)
+    system_prompt = load_render_prompt(db_schema=state['db_schema'])
+    system_prompt_length = len(system_prompt)
 
     question = f"""Transform the dataset below into a table in markdown syntax. For a result
     with one value only, build a table with one column:
@@ -315,6 +322,7 @@ def t2s_show_answer(state: GraphState):
         logger.debug(f"System-Prompt: \n \n {system_prompt} \n\n")
         logger.debug(f"Question:: \n \n {question} \n\n")
 
+    start_time_render = time.time()
     result = invoke_llm(base=env["llm_server_url"],
                         api=env["llm_server_api_token"],
                         model=env["llm_server_model_check"],
@@ -325,7 +333,7 @@ def t2s_show_answer(state: GraphState):
 
     state["display_result"] = str(result.display_result)
 
-    elapsed_time(logging=LOGGING, logger=logger, start_time=start_time, label="Time needed for rendering answer")
+    elapsed_time(logging=LOGGING, logger=logger, start_time=start_time_render, label=f"Time needed for rendering answer (Prompt-Length: {system_prompt_length})")
 
     return state
 
@@ -347,14 +355,15 @@ def t2s_correct_query(state: GraphState):
     system_prompt = "You are a correcting assistant and re-write the question, but keep the semantics."
     info_message = f"Rewrite the following question: {state['question']} "
 
+    start_time_rewrite = time.time()
     result = invoke_llm(base=env["llm_server_url"],
                         api=env["llm_server_api_token"],
                         model=env["llm_server_model_check"],
-                        temperature=0.0,
+                        temperature=0.5,
                         prompt=system_prompt,
                         query=info_message,
                         output=NewVariantOfQuestion)
-
+    elapsed_time(logging=LOGGING, logger=logger, start_time=start_time_rewrite, label="Time needed for rewriting question")
     state["question"] = result.new_question
 
     return state

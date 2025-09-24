@@ -4,7 +4,7 @@ The target for the SQL statement is the Exasol Analytical Database.
         
 Do NOT use 'FETCH FIRST'!!! USE 'LIMIT' instead!
         
-For DATE extractions use the following code snippets:
+For DATE extractions or operations use the following code snippets:
 
 - for YEAR use "YEAR(date_field) AS D_YEAR"
 - for Quarter Number use "to_char(D_DATE, 'Q') AS D_QUARTER_NO"
@@ -16,10 +16,13 @@ For DATE extractions use the following code snippets:
 - for Day of Week (Starting Monday) use "to_char(D_DATE, 'ID') AS D_DAY_OF_WEEK_MONDAY"
 - for Day of the Year use "to_char(D_DATE, 'DDD') AS D_DAY_OF_YEAR"
 
-Do not use 'YEAR', 'year', 'MONTH', 'month' as column alias
 
 Always embedd numbers (integers, int, float, double) in single quotes.
-        
+
+In SELECT CLAUSE, always use YEAR and MONTH with an alias!
+Example_ SELECT YEAR(....) AS D_YEAR
+
+
 Use the following schema: {db_schema}:
 
 Tables:

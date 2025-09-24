@@ -14,12 +14,10 @@ def load_translation_prompt(db_schema: str, schema: str) -> str:
 
     return prompt.format(db_schema=db_schema, schema=schema)
 
-def load_render_prompt(db_schema: str, schema: str) -> str:
 
+def load_render_prompt(db_schema: str) -> str:
     """ Load the Exasol prompt for text to sql transformation."""
 
     prompt = importlib.resources.read_text("exasol.ai.mcp.server.text_to_sql_option.resources", "result_rendering_prompt.txt")
 
-    return prompt.format(db_schema=db_schema, schema=schema)
-
-
+    return prompt.format(db_schema=db_schema)
