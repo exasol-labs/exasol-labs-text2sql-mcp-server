@@ -1,5 +1,6 @@
 ##############################################################
 ## Exasol MCP server with Text-to-SQL query option          ##
+## Module: Text to SQL translation                          ##
 ##----------------------------------------------------------##
 ## Version 1.0.0 DirkB@Exasol : Initial version             ##
 ##############################################################

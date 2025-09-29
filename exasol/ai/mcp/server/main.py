@@ -168,8 +168,8 @@ def _register_execute_query(mcp_server: ExasolMCPServer) -> None:
         ),
     )
 
-##
-## Added for Text-to-SQL option [DirkB @ Exasol: 2025-09-12]
+## ----- Text-to-SQL -----
+## Text-to-SQL option [DirkB @ Exasol: 2025-09-12]
 ## based on: Exasol MCP Server Version  1.0.0
 ##
 
@@ -178,23 +178,32 @@ def _register_text_to_sql(mcp_server: ExasolMCPServer) -> None:
         mcp_server.text_to_sql,
         description=(
             "The tool translates human questions / natural language questions into "
-            "SQL statements and executes it against the database."
-            "ALWAYS use this tool for translation of natural language questions into SQL."
-            "The tool always retrieves the metadata of the requested schema on its own."
+            "SQL statements and executes it against the database. "
+            "ALWAYS use this tool for translation of natural language questions into SQL. "
+            "The tool always retrieves the metadata of the requested schema on its own. "
             "Do not use other tools!"
         ),
     )
 
-def _register_test_to_sql_history(mcp_server: ExasolMCPServer) -> None:
+def _register_text_to_sql_history(mcp_server: ExasolMCPServer) -> None:
     mcp_server.tool(
         mcp_server.text_to_sql_history,
         description=(
-            "The tool returns SQl queries and the corresponding question for the requested"
-            "database schema."
+            "The tool returns SQL queries and the corresponding questions for the requested "
+            "database schema. You can search with phrases in the SQL history. Results are "
+            "returned based semantic search and the distance to the search term. "
         ),
     )
 
-##
+def _register_text_to_sql_e_r_diagram(mcp_server: ExasolMCPServer) -> None:
+    mcp_server.tool(
+        mcp_server.text_to_sql_e_r_diagram,
+        description=(
+            "The tool returns a Entity-Relationship diagram (E-R diagram) in Mermaid Syntax. "
+        ),
+    )
+
+## ----- Text-to-SQL -----
 ## Adapted for Text-to-SQL option [DirkB @ Exasol: 2025-09-12]
 ## based on: Exasol MCP Server Version  1.0.0
 ##  ----- change or addition for text-to-sql -----
@@ -221,7 +230,8 @@ def register_tools(mcp_server: ExasolMCPServer, config: McpServerSettings) -> No
         _register_execute_query(mcp_server)
     if config.enable_text_to_sql:
         _register_text_to_sql(mcp_server)
-        _register_test_to_sql_history(mcp_server)
+        _register_text_to_sql_history(mcp_server)
+        _register_text_to_sql_e_r_diagram(mcp_server)
 
 
 def get_mcp_settings() -> McpServerSettings:
@@ -274,7 +284,6 @@ def main():
         )
 
     connection = DbConnection(connection_factory=connection_factory)
-
     mcp_server = create_mcp_server(connection=connection, config=mcp_settings)
     mcp_server.run()
 

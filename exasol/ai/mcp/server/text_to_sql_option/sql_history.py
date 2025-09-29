@@ -1,7 +1,9 @@
-##
-## Added for Text-to-SQL option [DirkB @ Exasol: 2025-09-12]
-## based on: Exasol MCP Server Version  1.0.0
-##
+##############################################################
+## Exasol MCP server with Text-to-SQL query option          ##
+## Module: SQL AUDIT / SEARCH                               ##
+##----------------------------------------------------------##
+## Version 1.0.0 DirkB@Exasol : Initial version             ##
+##############################################################
 
 import chromadb
 import datetime

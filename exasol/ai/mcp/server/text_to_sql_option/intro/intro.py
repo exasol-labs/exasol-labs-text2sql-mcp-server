@@ -37,3 +37,19 @@ LOGGING_MODE = env['logger_mode']
 
 logger.add(sys.stdout, colorize=True, format="<green>{time}</green> <level>{message}</level>", filter="my_module", level="INFO")
 logger.add(env['logger_destination'])
+
+
+from typing import Optional
+
+
+class Filter:
+    def inlet(self, body: dict, user: Optional[dict] = None) -> dict:
+        email_id = user.get("email")
+
+        context_message = {
+            "role": "system",
+            "content": f"logged_in_user_email_id is {email_id}",
+        }
+        body.setdefault("messages", []).insert(0, context_message)
+
+        return body

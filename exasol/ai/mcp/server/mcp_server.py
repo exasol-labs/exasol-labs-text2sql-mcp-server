@@ -41,14 +41,12 @@ from exasol.ai.mcp.server.server_settings import (
 ##
 
 from exasol.ai.mcp.server.text_to_sql_option.utils.helpers import set_logging_label
+from exasol.ai.mcp.server.text_to_sql_option.e_r_diagram import generate_e_r_diagram
 from exasol.ai.mcp.server.text_to_sql_option.text_to_sql import t2s_start_process
 from exasol.ai.mcp.server.text_to_sql_option.sql_history import text_to_sql_history
 from exasol.ai.mcp.server.text_to_sql_option.intro.intro import (
-    env,
-    GraphState,
     logger,
     LOGGING,
-    LOGGING_MODE
 )
 
 TABLE_USAGE = (
@@ -323,5 +321,12 @@ class ExasolMCPServer(FastMCP):
                             ):
 
         result = text_to_sql_history(search_text=search_text, db_schema=db_schema, number_results=number_results)
+
+        return result
+
+    def text_to_sql_e_r_diagram(self,
+                                db_schema: Annotated[str, Field(description="Name of Database Schema")]) -> str:
+
+        result = generate_e_r_diagram(db_schema=db_schema)
 
         return result
