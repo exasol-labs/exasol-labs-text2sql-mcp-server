@@ -26,7 +26,7 @@ def t2s_info_query_not_relevant(state: GraphState):
     result = invoke_llm(base=env["llm_server_url"],
                         api=env["llm_server_api_token"],
                         model=env["llm_server_model_check"],
-                        temperature=0.5,
+                        temperature=env['temperature_info'],
                         prompt=system_prompt,
                         query=info_message,
                         output=BadRelevanceAnswer)
@@ -55,7 +55,7 @@ def t2s_info_unable_query_type(state: GraphState):
     result = invoke_llm(base=env["llm_server_url"],
                         api=env["llm_server_api_token"],
                         model=env["llm_server_model_check"],
-                        temperature=0.5,
+                        temperature=env['temperature_info'],
                         prompt=system_prompt,
                         query=info_message,
                         output=SQLTypeNotAllowed)
@@ -83,7 +83,7 @@ def t2s_info_unable_create_sql(state: GraphState):
     result = invoke_llm(base=env["llm_server_url"],
                         api=env["llm_server_api_token"],
                         model=env["llm_server_model_check"],
-                        temperature=0.5,
+                        temperature=env['temperature_info'],
                         prompt=system_prompt,
                         query=info_message,
                         output=UnableCreateSQL)

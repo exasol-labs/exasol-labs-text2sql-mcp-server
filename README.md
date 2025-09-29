@@ -252,12 +252,25 @@ MCP_OPENAI_SERVER_URL=<your LLM server URL>
 MCP_OPENAI_SERVER_API_KEY=<API-Key of your LLM Server>
 MCP_OPENAI_SERVER_MODEL_NAME_TRANSFORMATION=<your model name>
 MCP_OPENAI_SERVER_MODEL_NAME_RENDERING=<your model name>
-MCP_VECTORDB_FILE=<path-to-database-file-including-filename>>
-MCP_VECTORDB_SIMILARITY_SEARCH_DISTANCE=0.3
+MCP_VECTORDB_FILE=<path-to-database-file-including-filename>  
+MCP_LLM_TEMPERATURE_RELEVANCE_CHECK=0.0  
+MCP_LLM_TEMPERATURE_TRANSLATION=0.0  
+MCP_LLM_TEMPERATURE=QUERY_REWRITE=0.4  
+MCP_LLM_TEMPERATURE_RENDERING=0.0  
+MCP_LLM_TEMPERATURE_INFO=0.7  
+MCP_VECTORDB_SIMILARITY_SEARCH_DISTANCE=0.3  
 MCP_EXASOL_LOGGER=True
 MCP_EXASOL_LOGGER_MODE=EXTENSIVE     # (INFO|DEBUG)
 MCP_EXASOL_LOGGER_FILE=<absolute path to your log file>
 ```
+The meaning of these settings should be self-explanatory. Changing the so-called temperatures for the the  
+relevance check, translation and rendering should be changed if you know what the consequences are.  
+The temperatures for the info messages and the query rewrite can be lowered or increased to your likings,  
+however, be cautious with the setting for the query rewrite.  
+
+In general, the temperature defines, are strict the LLM will generate answers. The higher the temperature,   
+the more variation you will see.
+
 
 They secret key and the encrypted password shall be created with the 
 
@@ -278,10 +291,13 @@ with good quality. We have made some good experience with the
 Large Language Model for both transforming into SQL statements and rendering result sets.  
 In case you decide to use an AI Desktop where you can configure the LLM to be utilized,  
 you need to check, if the LLM is trained for tool usage. The more parameters the LLM features  
-the higher is the performance requirement for a timely answer. A 70B parameter LLM on an Apple  
-Macbook Pro with M4MAX and 40 GPU cores and *LM-Studio* or *ollama* is already  
-consuming quite some time. Having a dedicated LLM server (on premise) is definitely a plus.
+the higher is the performance requirement for a timely answer. LLM's with too many parameters might  
+consume quite some time. Having a dedicated LLM server (on premise) is definitely a plus.
+
+Also, the desired LLM needs to be trained for tool usage.
   
+
+
   
 ### Please consider!
 

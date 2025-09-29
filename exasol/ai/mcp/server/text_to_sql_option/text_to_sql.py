@@ -79,7 +79,7 @@ def t2s_check_relevance(state: GraphState) -> str:
     result = invoke_llm(base=env["llm_server_url"],
                                       api=env["llm_server_api_token"],
                                       model=env["llm_server_model_check"],
-                                      temperature=0.0,
+                                      temperature=env['temperature_relevance_check'],
                                       prompt=system_prompt,
                                       query=state['question'],
                                       output=CheckIsRelevant)
@@ -143,7 +143,7 @@ def t2s_human_language_to_sql(state: GraphState):
     result = invoke_llm(base=env["llm_server_url"],
                         api=env["llm_server_api_token"],
                         model=env["llm_server_model_check"],
-                        temperature=0.0,
+                        temperature=env['temperature_translation'],
                         prompt=system_prompt,
                         query=state['question'],
                         output=TransformIntoSql)
@@ -327,7 +327,7 @@ def t2s_show_answer(state: GraphState):
     result = invoke_llm(base=env["llm_server_url"],
                         api=env["llm_server_api_token"],
                         model=env["llm_server_model_check"],
-                        temperature=0.0,
+                        temperature=env['temperature_rendering'],
                         prompt=system_prompt,
                         query=state['question'],
                         output=DisplayResult)
@@ -360,7 +360,7 @@ def t2s_correct_query(state: GraphState):
     result = invoke_llm(base=env["llm_server_url"],
                         api=env["llm_server_api_token"],
                         model=env["llm_server_model_check"],
-                        temperature=0.5,
+                        temperature=env['temperature_query_rewrite'],
                         prompt=system_prompt,
                         query=info_message,
                         output=NewVariantOfQuestion)

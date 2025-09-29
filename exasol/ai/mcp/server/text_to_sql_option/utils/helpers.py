@@ -59,6 +59,17 @@ def get_environment() -> dict:
             "logger": os.getenv("MCP_EXASOL_LOGGER"),
             "logger_mode": os.getenv("MCP_EXASOL_LOGGER_MODE").lower(),
             "logger_destination": os.getenv("MCP_EXASOL_LOGGER_FILE"),
+            "temperature_relevance_check": os.getenv("MCP_LLM_TEMPERATURE_RELEVANCE_CHECK"),
+            "temperature_translation": os.getenv("MCP_LLM_TEMPERATURE_TRANSLATION"),
+            "temperature_query_rewrite": os.getenv("MCP_LLM_TEMPERATURE_QUERY_REWRITE"),
+            "temperature_rendering": os.getenv("MCP_LLM_TEMPERATURE_RELEVANCE_RENDERING"),
+            "temperature_info": os.getenv("MCP_LLM_TEMPERATURE_INFO"),
+
+
+
+
+
+
         }
 
     return env
