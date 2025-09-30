@@ -69,7 +69,7 @@ open source AI Desktops like Jan.ai.
 
 This is the workflow of the Text-to-SQL agent, coded with the langgraph library.
 
-<img src="./langgraph_workflow.png" width="640"  alt=""/>
+<img src="./exasol/ai/mcp/server/text_to_sql_option/images/langgraph_workflow.png" width="640"  alt=""/>
   
 
 ## Prerequisites
@@ -397,7 +397,7 @@ As an example, the following request:
 
 shows the following SQL statement
 
-![img.png](sql_history.png)
+![img.png](./exasol/ai/mcp/server/text_to_sql_option/images/sql_history.png)
 
 Please beware, the quality of the search results depend on the selected LLM. If you are using a different 
 LLM you might have a different experience.
