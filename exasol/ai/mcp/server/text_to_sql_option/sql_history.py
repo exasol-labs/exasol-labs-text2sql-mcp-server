@@ -11,7 +11,7 @@ import sys
 
 from pydantic import BaseModel, Field
 
-from exasol.ai.mcp.server.text_to_sql_option.utils.helpers import get_environment
+from exasol.ai.mcp.server.text_to_sql_option.utilities.helpers import get_environment
 
 
 ##

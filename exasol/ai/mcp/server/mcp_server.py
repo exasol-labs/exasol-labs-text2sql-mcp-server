@@ -1,4 +1,4 @@
-import sys
+
 import re
 from functools import cache
 from typing import (
@@ -40,7 +40,7 @@ from exasol.ai.mcp.server.server_settings import (
 ## based on: Exasol MCP Server Version  1.0.0
 ##
 
-from exasol.ai.mcp.server.text_to_sql_option.utils.helpers import set_logging_label
+from exasol.ai.mcp.server.text_to_sql_option.utilities.helpers import set_logging_label
 from exasol.ai.mcp.server.text_to_sql_option.e_r_diagram import generate_e_r_diagram
 from exasol.ai.mcp.server.text_to_sql_option.text_to_sql import t2s_start_process
 from exasol.ai.mcp.server.text_to_sql_option.sql_history import text_to_sql_history

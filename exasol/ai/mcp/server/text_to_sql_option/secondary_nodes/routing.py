@@ -1,7 +1,7 @@
 
 
 from exasol.ai.mcp.server.text_to_sql_option.intro.intro import GraphState, LOGGING, LOGGING_MODE
-from exasol.ai.mcp.server.text_to_sql_option.utils.database_functions import get_sql_query_type
+from exasol.ai.mcp.server.text_to_sql_option.utilities.database_functions import get_sql_query_type
 
 
 def t2s_check_sql_router(state: GraphState):

@@ -16,9 +16,9 @@ from exasol.ai.mcp.server.text_to_sql_option.intro.intro import (
     logger,
     LOGGING
 )
-from exasol.ai.mcp.server.text_to_sql_option.utils.helpers import elapsed_time
-from exasol.ai.mcp.server.text_to_sql_option.utils.database_functions import t2s_database_schema
-from exasol.ai.mcp.server.text_to_sql_option.utils.llm import invoke_llm
+from exasol.ai.mcp.server.text_to_sql_option.utilities.helpers import elapsed_time
+from exasol.ai.mcp.server.text_to_sql_option.utilities.database_functions import t2s_database_schema
+from exasol.ai.mcp.server.text_to_sql_option.utilities.llm import invoke_llm
 
 
 class ERGraph(BaseModel):
@@ -32,7 +32,7 @@ def generate_e_r_diagram(db_schema: Annotated[str, Field(description="Name of Da
 
     system_prompt = """
                         You are a helpful assistant with knowledge for graphs base don the Mermaid Syntax.
-                        - Specify the nodes only with table name, omit schema name.
+                        - Specify the secondary_nodes only with table name, omit schema name.
                         - In a node only show column name and data type, but no scake or precision.
                     
                      """

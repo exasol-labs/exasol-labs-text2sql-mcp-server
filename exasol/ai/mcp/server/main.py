@@ -203,10 +203,11 @@ def _register_text_to_sql_e_r_diagram(mcp_server: ExasolMCPServer) -> None:
         ),
     )
 
+
 ## ----- Text-to-SQL -----
-## Adapted for Text-to-SQL option [DirkB @ Exasol: 2025-09-12]
+## Added for Text-to-SQL option [DirkB @ Exasol: 2025-09-13]
 ## based on: Exasol MCP Server Version  1.0.0
-##  ----- change or addition for text-to-sql -----
+##
 
 def register_tools(mcp_server: ExasolMCPServer, config: McpServerSettings) -> None:
     if config.schemas.enable:

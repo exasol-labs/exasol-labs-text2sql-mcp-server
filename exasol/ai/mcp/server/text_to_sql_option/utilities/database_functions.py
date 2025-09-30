@@ -13,7 +13,7 @@ from exasol.ai.mcp.server.text_to_sql_option.intro.intro import (
     logger,
     LOGGING,
 )
-from exasol.ai.mcp.server.text_to_sql_option.utils.helpers import elapsed_time
+from exasol.ai.mcp.server.text_to_sql_option.utilities.helpers import elapsed_time
 
 
 ############################################################

@@ -26,19 +26,19 @@ from exasol.ai.mcp.server.text_to_sql_option.intro.intro import (
     LOGGING,
     LOGGING_MODE
 )
-from exasol.ai.mcp.server.text_to_sql_option.utils.helpers import elapsed_time
-from exasol.ai.mcp.server.text_to_sql_option.utils.llm import invoke_llm
-from exasol.ai.mcp.server.text_to_sql_option.utils.helpers import set_logging_label
-from exasol.ai.mcp.server.text_to_sql_option.utils.database_functions import t2s_database_schema
-from exasol.ai.mcp.server.text_to_sql_option.utils.database_functions import get_sql_query_type
-from exasol.ai.mcp.server.text_to_sql_option.utils.load_prompts import load_translation_prompt
-from exasol.ai.mcp.server.text_to_sql_option.utils.load_prompts import load_render_prompt
-from exasol.ai.mcp.server.text_to_sql_option.nodes.info_messages_llm import (
+from exasol.ai.mcp.server.text_to_sql_option.utilities.helpers import elapsed_time
+from exasol.ai.mcp.server.text_to_sql_option.utilities.llm import invoke_llm
+from exasol.ai.mcp.server.text_to_sql_option.utilities.helpers import set_logging_label
+from exasol.ai.mcp.server.text_to_sql_option.utilities.database_functions import t2s_database_schema
+from exasol.ai.mcp.server.text_to_sql_option.utilities.database_functions import get_sql_query_type
+from exasol.ai.mcp.server.text_to_sql_option.utilities.load_prompts import load_translation_prompt
+from exasol.ai.mcp.server.text_to_sql_option.utilities.load_prompts import load_render_prompt
+from exasol.ai.mcp.server.text_to_sql_option.secondary_nodes.info_messages_llm import (
     t2s_info_query_not_relevant,
     t2s_info_unable_query_type,
     t2s_info_unable_create_sql
 )
-from exasol.ai.mcp.server.text_to_sql_option.nodes.routing import (
+from exasol.ai.mcp.server.text_to_sql_option.secondary_nodes.routing import (
     t2s_check_sql_router,
     t2s_relevance_router,
     t2s_sql_valid_router,
