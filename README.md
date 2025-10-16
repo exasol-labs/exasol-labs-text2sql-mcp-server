@@ -124,7 +124,7 @@ example.
   "mcpServers": {
     "exasol_db": {
       "command": "uvx",
-      "args": ["--from exasol-mcp-server-t2s exasol-mcp-server"],
+      "args": ["--from exasol-labs exasol-labs-text2sql-mcp-server exasol-mcp-server"],
       "env": {
         "EXA_DSN": "exasol-server-hostname:8563",
         "EXA_USER": "my-user-name",
