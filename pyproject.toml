@@ -1,0 +1,9 @@
+[project]
+name = "exasol-mcp-server-governed-sql"
+version = "0.1.0"
+description = "Extension of the official supported EXasol MCP-Server with Text-to-SQL (GovernedSQL)"
+readme = "README.md"
+requires-python = ">=3.12"
+dependencies = [
+    "exasol-mcp-server==1.2.1",
+]
