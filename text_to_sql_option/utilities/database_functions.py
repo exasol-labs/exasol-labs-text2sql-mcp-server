@@ -8,12 +8,12 @@ import time
 from sqlglot import exp, parse_one
 from sqlglot.errors import ParseError
 
-from exasol.ai.mcp.server.text_to_sql_option.intro.intro import (
+from text_to_sql_option.intro.intro import (
     env,
     logger,
     LOGGING,
 )
-from exasol.ai.mcp.server.text_to_sql_option.utilities.helpers import elapsed_time
+from text_to_sql_option.utilities.helpers import elapsed_time
 
 
 ############################################################

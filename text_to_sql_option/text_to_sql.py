@@ -19,26 +19,26 @@ from sql_formatter.core import format_sql
 ## Project packages
 
 from exasol.ai.mcp.server.server_settings import ExaDbResult
-from exasol.ai.mcp.server.text_to_sql_option.intro.intro import (
+from text_to_sql_option.intro.intro import (
     env,
     GraphState,
     logger,
     LOGGING,
     LOGGING_MODE
 )
-from exasol.ai.mcp.server.text_to_sql_option.utilities.helpers import elapsed_time
-from exasol.ai.mcp.server.text_to_sql_option.utilities.llm import invoke_llm
-from exasol.ai.mcp.server.text_to_sql_option.utilities.helpers import set_logging_label
-from exasol.ai.mcp.server.text_to_sql_option.utilities.database_functions import t2s_database_schema
-from exasol.ai.mcp.server.text_to_sql_option.utilities.database_functions import get_sql_query_type
-from exasol.ai.mcp.server.text_to_sql_option.utilities.load_prompts import load_translation_prompt
-from exasol.ai.mcp.server.text_to_sql_option.utilities.load_prompts import load_render_prompt
-from exasol.ai.mcp.server.text_to_sql_option.secondary_nodes.info_messages_llm import (
+from text_to_sql_option.utilities.helpers import elapsed_time
+from text_to_sql_option.utilities.llm import invoke_llm
+from text_to_sql_option.utilities.helpers import set_logging_label
+from text_to_sql_option.utilities.database_functions import t2s_database_schema
+from text_to_sql_option.utilities.database_functions import get_sql_query_type
+from text_to_sql_option.utilities.load_prompts import load_translation_prompt
+from text_to_sql_option.utilities.load_prompts import load_render_prompt
+from text_to_sql_option.secondary_nodes.info_messages_llm import (
     t2s_info_query_not_relevant,
     t2s_info_unable_query_type,
     t2s_info_unable_create_sql
 )
-from exasol.ai.mcp.server.text_to_sql_option.secondary_nodes.routing import (
+from text_to_sql_option.secondary_nodes.routing import (
     t2s_check_sql_router,
     t2s_relevance_router,
     t2s_sql_valid_router,

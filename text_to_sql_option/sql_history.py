@@ -11,7 +11,7 @@ import sys
 
 from pydantic import BaseModel, Field
 
-from exasol.ai.mcp.server.text_to_sql_option.utilities.helpers import get_environment
+from text_to_sql_option.utilities.helpers import get_environment
 
 
 ##
@@ -26,11 +26,16 @@ class SqlHistory(BaseModel):
 
 def text_to_sql_history(search_text: str, db_schema: str, number_results: int) -> list:
 
+    print(f"sql_history.py - search_text: {search_text}")
+    print(f"sql_history.py - db_schema: {db_schema}")
+    print(f"sql_history.py - rum_results: {number_results}")
+
     env = get_environment()
+    print(env['vectordb_persistent_storage'])
     result = []
     try:
 
-        #search_text = f"*{search_text}*"
+        search_text = "*" # f"*{search_text}*"
         vectordb_client = chromadb.PersistentClient(path=env['vectordb_persistent_storage'])
         collection = vectordb_client.get_collection(name='Questions_SQL_History')
         result = collection.query(query_texts=[search_text],
@@ -45,6 +50,8 @@ def text_to_sql_history(search_text: str, db_schema: str, number_results: int) -
         print(f"ChromaDB - Error: {e}", file=sys.stderr)
 
     ## ChromaDB cannot sort like 'ORDER BY'
+
+    print(result)
 
     combined = list(zip(
         result['ids'][0],

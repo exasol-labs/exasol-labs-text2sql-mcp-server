@@ -11,14 +11,14 @@ import time
 from pydantic import BaseModel, Field
 from typing import Annotated
 
-from exasol.ai.mcp.server.text_to_sql_option.intro.intro import (
+from text_to_sql_option.intro.intro import (
     env,
     logger,
     LOGGING
 )
-from exasol.ai.mcp.server.text_to_sql_option.utilities.helpers import elapsed_time
-from exasol.ai.mcp.server.text_to_sql_option.utilities.database_functions import t2s_database_schema
-from exasol.ai.mcp.server.text_to_sql_option.utilities.llm import invoke_llm
+from text_to_sql_option.utilities.helpers import elapsed_time
+from text_to_sql_option.utilities import t2s_database_schema
+from text_to_sql_option.utilities import invoke_llm
 
 
 class ERGraph(BaseModel):

@@ -5,7 +5,7 @@ import sys
 from loguru import logger
 from typing_extensions import TypedDict
 
-from exasol.ai.mcp.server.text_to_sql_option.utilities.helpers import get_environment
+from text_to_sql_option.utilities.helpers import get_environment
 
 env = get_environment()
 

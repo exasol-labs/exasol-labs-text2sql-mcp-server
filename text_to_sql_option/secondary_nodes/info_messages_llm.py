@@ -3,9 +3,9 @@
 
 from pydantic import BaseModel, Field
 
-from exasol.ai.mcp.server.text_to_sql_option.intro.intro import env, GraphState,logger, LOGGING, LOGGING_MODE
-from exasol.ai.mcp.server.text_to_sql_option.utilities.helpers import set_logging_label
-from exasol.ai.mcp.server.text_to_sql_option.utilities.llm import invoke_llm
+from text_to_sql_option.intro.intro import env, GraphState,logger, LOGGING
+from text_to_sql_option.utilities.helpers import set_logging_label
+from text_to_sql_option.utilities.llm import invoke_llm
 
 ###############################################################################################
 ## Inform user that query seems to be not relevant / does not fit to desired database schema ##
