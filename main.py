@@ -68,6 +68,8 @@ def text_to_sql(question: str, db_schema: str, state: GraphState):
 
 def sql_audit(search_text: str, db_schema: str, number_results: int=5):
 
+    if env['logger']:
+        set_logging_label(logging=LOGGING, logger=logger, label="##### Retrieving SQL Statements from VectorDB")
 
     result = text_to_sql_audit(search_text=search_text, db_schema=db_schema, number_results=number_results)
 
@@ -75,6 +77,9 @@ def sql_audit(search_text: str, db_schema: str, number_results: int=5):
 
 
 def teach_sql(question: str, sql_statement: str, db_schema: str):
+
+    if env['logger']:
+        set_logging_label(logging=LOGGING, logger=logger, label="##### Teaching VectorDB with Question/SQL Statement")
 
     learn_sql(question, sql_statement, db_schema)
 
@@ -118,10 +123,12 @@ def main():
     ##
 
     try:
+
         vectordb_client = chromadb.PersistentClient(path=env['vectordb_persistent_storage'])
         vectordb_client.get_or_create_collection(name="Questions_SQL_History")
+
     except Exception as e:
-        print(e)
+        print(f"VectorDB - Startup - Check: {e}")
         exit()
 
 
