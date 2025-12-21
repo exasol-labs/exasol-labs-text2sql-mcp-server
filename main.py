@@ -35,7 +35,7 @@ from exasol.ai.mcp.server.mcp_server import ExasolMCPServer
 ##
 
 from text_to_sql_option.utilities.helpers import get_environment, set_logging_label
-from text_to_sql_option.sql_audit import text_to_sql_history
+from text_to_sql_option.sql_audit import text_to_sql_audit
 from text_to_sql_option.text_to_sql import t2s_start_process
 from text_to_sql_option.learn_sql import learn_sql
 from text_to_sql_option.intro.intro import (
@@ -70,7 +70,7 @@ def text_to_sql(question: str, db_schema: str, state: GraphState):
 def sql_audit(search_text: str, db_schema: str, number_results: int=5):
 
 
-    result = text_to_sql_history(search_text=search_text, db_schema=db_schema, number_results=number_results)
+    result = text_to_sql_audit(search_text=search_text, db_schema=db_schema, number_results=number_results)
 
     return result
 

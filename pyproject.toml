@@ -1,8 +1,14 @@
 [project]
 name = "exasol-mcp-server-governed-sql"
-version = "0.1.1"
+version = "1.2.1a"
 description = "Extension of the official supported EXasol MCP-Server with Text-to-SQL (GovernedSQL)"
+authors = [
+    {name = "Dirk Beerbohm (Text-to-SQL)", email = "dirk.beerbohm@exasol.com"},
+    {name = "Mikhail Beck", email = "mikhail.beck@exasol.com"},
+]
 readme = "README.md"
+license = "MIT"
+keywords = ['exasol', 'MCP server', 'Text-to-SQL', 'GovernedSQL']
 requires-python = ">=3.12"
 dependencies = [
     "chromadb>=1.3.7",

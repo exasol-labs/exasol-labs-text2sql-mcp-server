@@ -25,7 +25,7 @@ class SqlHistory(BaseModel):
     )
 
 
-def text_to_sql_history(search_text: str, db_schema: str, number_results: int) -> list:
+def text_to_sql_audit(search_text: str, db_schema: str, number_results: int) -> list:
 
     env = get_environment()
     print(env['vectordb_persistent_storage'])
@@ -37,10 +37,8 @@ def text_to_sql_history(search_text: str, db_schema: str, number_results: int) -
         collection = vectordb_client.get_collection(name='Questions_SQL_History')
         result = collection.query(query_texts=[search_text],
                                n_results=number_results,
-                               where={ "$and" : [ {'user': env['db_user'].lower() },
-                                                  {'db_schema': db_schema },
-                                                ]
-                                       },
+                               where= {'db_schema': db_schema },
+
                                include=["documents", "metadatas"])
 
     except Exception as e:
