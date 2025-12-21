@@ -5,10 +5,12 @@
 ## under a pure "Love it or Leave it" rule - No liability that it always produces 100% correct SQL statements         ##
 ##--------------------------------------------------------------------------------------------------------------------##
 ## Version 1.2.1                                                                                                      ##
-## 2025-12-23 Dirk Beerbohm: Re-Designed to use the new HookUp functionality of the MCP Server                        ##
+## 2025-12-23 Dirk Beerbohm: - Re-Designed to use the new HookUp functionality of the MCP Server                      ##
+##                           - Adapted the environment variables to the official MCP-Server                           ##
+##                           - Ability to store a combination of Question/SQL Statement                               ##
 ##                                                                                                                    ##
 ## Version 1.0.0                                                                                                      ##
-## 2025-10-16 Dirk Beerbohm: Initial public release; share same code base as the official MCP-Server                  ##
+## 2025-10-16 Dirk Beerbohm: - Initial public release; share same code base as the official MCP-Server                ##
 ########################################################################################################################
 
 
@@ -17,15 +19,12 @@
 ##
 
 import chromadb
-from dotenv import load_dotenv
-from pydantic import Field
-from typing import (
-    Annotated,
-)
+#from dotenv import load_dotenv
+
 
 ##
 ## The "underlying" Exasol MCP Server
-#######
+##
 
 from exasol.ai.mcp.server import mcp_server
 from exasol.ai.mcp.server.mcp_server import ExasolMCPServer
@@ -34,7 +33,7 @@ from exasol.ai.mcp.server.mcp_server import ExasolMCPServer
 ## Thext-to-SQL (GovernedSQL) packages
 ##
 
-from text_to_sql_option.utilities.helpers import get_environment, set_logging_label
+from text_to_sql_option.utilities.helpers import set_logging_label
 from text_to_sql_option.sql_audit import text_to_sql_audit
 from text_to_sql_option.text_to_sql import t2s_start_process
 from text_to_sql_option.learn_sql import learn_sql
@@ -115,31 +114,20 @@ def main():
 
 
     ##
-    ## Load the environment
+    ## Startup
     ##
-
-    load_dotenv()
-
-    environment = get_environment()
-
-    ##
-    ## Very first start, ensure that VectorDB exists
-    ##
-
-    vectordb_client = chromadb.PersistentClient(path=env['vectordb_persistent_storage'])
 
     try:
+        vectordb_client = chromadb.PersistentClient(path=env['vectordb_persistent_storage'])
         vectordb_client.get_or_create_collection(name="Questions_SQL_History")
     except Exception as e:
         print(e)
         exit()
 
 
-    ## Initiate the official Exasol MCP Server
+    ## Initiate the official Exasol MCP Server and register additional tools
 
     server = mcp_server()
-
-
 
     _register_text_to_sql(server)
     _register_text_to_sql_audit(server)

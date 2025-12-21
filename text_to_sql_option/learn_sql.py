@@ -1,9 +1,9 @@
 
 
 import chromadb
-import datetime
 import time
 
+from datetime import datetime
 
 from text_to_sql_option.utilities.helpers import get_environment
 
@@ -17,7 +17,7 @@ from text_to_sql_option.intro.intro import (
 from text_to_sql_option.utilities.helpers import elapsed_time
 
 
-def learn_sql(question: str, sql_statement: str, db_schema: str) -> str:
+def learn_sql(question: str, sql_statement: str, db_schema: str) -> list:
 
     #env = get_environment()
 
@@ -35,7 +35,7 @@ def learn_sql(question: str, sql_statement: str, db_schema: str) -> str:
     sql_collection.add(
         documents=[ question ],
         metadatas=[{"sql": sql_statement,
-                    "execution_date": '',
+                    "execution_date": str(datetime.now()),
                     "db_schema": db_schema,
                     "user": 'system',
                     "origin": "learn_sql"}],
@@ -46,3 +46,6 @@ def learn_sql(question: str, sql_statement: str, db_schema: str) -> str:
 
 
     elapsed_time(logging=LOGGING, logger=logger, start_time=start_time_chroma, label="Elapsed Time on VectorDB")
+
+    return [ "Question / SQ Statement combination stored!" ]
+
