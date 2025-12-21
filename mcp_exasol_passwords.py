@@ -64,7 +64,7 @@ def create_secret_key() -> str:
     try:
         secret_key = Fernet.generate_key()
         secret_key = re.search("b'(.*)'", secret_key).group(1)
-        update_env_variable(file_path=f"{home_dir}/.env", key='MCP_SERVER_EXASOL_SECRET_KEY', value=secret_key)
+        update_env_variable(file_path=f"{home_dir}/.env", key='EXA_MCP_SECRET_KEY', value=secret_key)
     except Exception as e:
         return "ERROR: Could not write secret_key!"
     else:
@@ -76,7 +76,7 @@ def create_secret_key() -> str:
 ###########################################
 
 load_dotenv()
-SECRET_KEY = os.getenv("MCP_SERVER_EXASOL_SECRET_KEY")
+SECRET_KEY = os.getenv("EXA_MCP_SECRET_KEY")
 assert SECRET_KEY
 FERNET = Fernet(SECRET_KEY)
 
@@ -90,7 +90,7 @@ if  len(sys.argv) > 1 and sys.argv[1] == "--decrypt":
     ## Decrypt the password -  potentially unsafe!
 
     try:
-        stored_user_password = os.getenv("MCP_EXASOL_DATABASE_PASSWORD")
+        stored_user_password = os.getenv("EXA_CRYPTED_PASSWORD")
         decrypted_user_password = FERNET.decrypt(stored_user_password).decode()
 
     except Exception as e:
@@ -108,7 +108,7 @@ elif len(sys.argv) > 1 and sys.argv[1] == "--db_password":
     new_enc_password = FERNET.encrypt(new_password.encode()).decode()
 
     try:
-        update_env_variable(file_path=f"{home_dir}/.env", key='MCP_EXASOL_DATABASE_PASSWORD', value=new_enc_password)
+        update_env_variable(file_path=f"{home_dir}/.env", key='EXA_CRYPTED_PASSWORD', value=new_enc_password)
 
     except Exception as e:
         print("Error: Could not write encrypted database password!")

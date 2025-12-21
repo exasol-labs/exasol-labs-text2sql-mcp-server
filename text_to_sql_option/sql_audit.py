@@ -8,6 +8,7 @@
 import chromadb
 import datetime
 import sys
+import time
 
 from pydantic import BaseModel, Field
 
@@ -25,10 +26,6 @@ class SqlHistory(BaseModel):
 
 
 def text_to_sql_history(search_text: str, db_schema: str, number_results: int) -> list:
-
-    print(f"sql_history.py - search_text: {search_text}")
-    print(f"sql_history.py - db_schema: {db_schema}")
-    print(f"sql_history.py - rum_results: {number_results}")
 
     env = get_environment()
     print(env['vectordb_persistent_storage'])

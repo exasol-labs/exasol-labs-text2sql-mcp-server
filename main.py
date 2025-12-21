@@ -34,9 +34,10 @@ from exasol.ai.mcp.server.mcp_server import ExasolMCPServer
 ## Thext-to-SQL (GovernedSQL) packages
 ##
 
-from text_to_sql_option.utilities.helpers import set_logging_label
-from text_to_sql_option.sql_history import text_to_sql_history
+from text_to_sql_option.utilities.helpers import get_environment, set_logging_label
+from text_to_sql_option.sql_audit import text_to_sql_history
 from text_to_sql_option.text_to_sql import t2s_start_process
+from text_to_sql_option.learn_sql import learn_sql
 from text_to_sql_option.intro.intro import (
     env,
     GraphState,
@@ -65,22 +66,18 @@ def text_to_sql(question: str, db_schema: str, state: GraphState):
 
     return state
 
-#def t2s_to_sql_history(self,
-#                        search_text: Annotated[str, Field(description="Search Text in question metadata field'", default="*")],
-#                        db_schema: Annotated[str, Field(description="Name of Database Schema", default="*")],
-#                        number_results: Annotated[int, Field(description="Number of records returned", default=5)],
-#                        ):
 
 def sql_audit(search_text: str, db_schema: str, number_results: int=5):
-
-    print(search_text)
-    print(db_schema)
-    print(number_results)
 
 
     result = text_to_sql_history(search_text=search_text, db_schema=db_schema, number_results=number_results)
 
     return result
+
+
+def teach_sql(question: str, sql_statement: str, db_schema: str):
+
+    learn_sql(question, sql_statement, db_schema)
 
 
 def _register_text_to_sql(the_mcp_server: ExasolMCPServer) -> None:
@@ -95,7 +92,7 @@ def _register_text_to_sql(the_mcp_server: ExasolMCPServer) -> None:
         ),
     )
 
-def _register_text_to_sql_history(the_mcp_server: ExasolMCPServer) -> None:
+def _register_text_to_sql_audit(the_mcp_server: ExasolMCPServer) -> None:
     the_mcp_server.tool(
         sql_audit,
         description=(
@@ -105,28 +102,48 @@ def _register_text_to_sql_history(the_mcp_server: ExasolMCPServer) -> None:
         ),
     )
 
-def main():
-    set_logging_label(logging=LOGGING, logger=logger, label="##### Starting Text-to-SQL (Main)")
+def _register_teach_sql(the_mcp_server: ExasolMCPServer) -> None:
+    the_mcp_server.tool(
+        teach_sql,
+        description=(
+            "The tool stores a combination of a natural language question and its corresponding "
+            "SQL statement into a VectorDB. It does not execute a query or answer an question."
+        ),
+    )
 
+def main():
+
+
+    ##
     ## Load the environment
+    ##
 
     load_dotenv()
+
+    environment = get_environment()
 
     ##
     ## Very first start, ensure that VectorDB exists
     ##
 
     vectordb_client = chromadb.PersistentClient(path=env['vectordb_persistent_storage'])
-    sql_collection = vectordb_client.get_or_create_collection(name="Questions_SQL_History")
 
+    try:
+        vectordb_client.get_or_create_collection(name="Questions_SQL_History")
+    except Exception as e:
+        print(e)
+        exit()
 
 
     ## Initiate the official Exasol MCP Server
 
     server = mcp_server()
 
+
+
     _register_text_to_sql(server)
-    _register_text_to_sql_history(server)
+    _register_text_to_sql_audit(server)
+    _register_teach_sql(server)
 
 
    ##  Finally, run the server
