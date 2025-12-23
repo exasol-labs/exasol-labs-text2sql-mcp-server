@@ -14,11 +14,14 @@
 ########################################################################################################################
 
 
+VERSION = '1.2.1'
+
 ##
 ## Standard Python packages
 ##
 
 import chromadb
+import click
 #from dotenv import load_dotenv
 
 
@@ -46,13 +49,14 @@ from text_to_sql_option.intro.intro import (
 )
 
 
+##############################
+## Entry-Point to the tools ##
+##############################
+
 def text_to_sql(question: str, db_schema: str, state: GraphState):
 
     #if not self.config.enable_text_to_sql:
     #    raise RuntimeError("Text-to-SQL option is disabled")
-
-    print(question)
-    print(db_schema)
 
     set_logging_label(logging=LOGGING, logger=logger, label="##### Starting Text-to-SQL")
     set_logging_label(logging=LOGGING, logger=logger, label=f"### Database schema: {db_schema}")
@@ -83,6 +87,10 @@ def teach_sql(question: str, sql_statement: str, db_schema: str):
 
     learn_sql(question, sql_statement, db_schema)
 
+
+#####################################################################
+## Register tool sof this module in addition to the original tools ##
+#####################################################################
 
 def _register_text_to_sql(the_mcp_server: ExasolMCPServer) -> None:
     the_mcp_server.tool(
@@ -115,22 +123,41 @@ def _register_teach_sql(the_mcp_server: ExasolMCPServer) -> None:
         ),
     )
 
-def main():
 
+########################################################
+## Test for VectorDB, if not exists, create a new one ##
+########################################################
 
-    ##
-    ## Startup
-    ##
+def check_vectordb():
 
     try:
 
         vectordb_client = chromadb.PersistentClient(path=env['vectordb_persistent_storage'])
-        vectordb_client.get_or_create_collection(name="Questions_SQL_History")
+        vectordb_client.get_or_create_collection(name="SQL_Audit")
 
     except Exception as e:
         print(f"VectorDB - Startup - Check: {e}")
         exit()
+    else:
+        print("VectorDB - Startup - Check: OK")
 
+
+##################################################
+## main_http(): Standalone MCP Server over HTTP ##
+##################################################
+
+@click.command()
+@click.version_option(VERSION, message="Version: %(version)s")
+@click.option("--transport", default="http", help="MCP Transport (default: http)")
+@click.option("--host", default="0.0.0.0", help="Host address (default: 0.0.0.0)")
+@click.option("--port", default=8000, type=click.IntRange(min=1), help="Port number (default: 8000)")
+
+def main_http(transport, host, port) -> None:
+    """
+       Main entry point that creates and runs the MCP server centralized.
+    """
+
+    check_vectordb()
 
     ## Initiate the official Exasol MCP Server and register additional tools
 
@@ -143,9 +170,28 @@ def main():
 
    ##  Finally, run the server
 
-    server.run(transport='http', host='localhost', port=9000)
+    server.run(transport=transport, host=host, port=port)
 
+
+####################################
+## main():  MCP Server over STDIO ##
+####################################
+
+def main():
+    """
+    Main entry point that creates and runs the MCP server locally.
+    """
+
+    check_vectordb()
+
+    server = mcp_server()
+
+    _register_text_to_sql(server)
+    _register_text_to_sql_audit(server)
+    _register_teach_sql(server)
+
+    server.run()
 
 if __name__ == "__main__":
 
-    main()
+    main_http()

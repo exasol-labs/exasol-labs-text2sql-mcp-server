@@ -271,12 +271,12 @@ EXA_MCP_SECRET_KEY=<mcp-server-secret>
 EXA_DSN=<exasol-database-dsn>
 EXA_USER=<db-user>
 EXA_PASSWORD=<db-password>>
-EXA_CRYPTED_PASSWORD=gAAAAABpRvGDNvKJ1ewIwHP55uVdrtWkWlj-za1ewwDjz2aog3fn5bhxvJcnG0epMce0bVTPcGKAajwlbGs_tvXQAM8PCSmfgg==
+EXA_CRYPTED_PASSWORD=<some crypted password, set by mcp_exasol_passwords.py>
 EXA_MCP_SETTINGS=<path-to-mcp-server-settings>
-EXA_MCP_LLM_SERVER_URL=http://localhost:1234/v1
+EXA_MCP_LLM_SERVER_URL=<URL for LLM server>
 EXA_MCP_LLM_SERVER_API_KEY=not-needed
-EXA_MCP_LLM_TRANSFORMATION=qwen/qwen3-coder-30b
-EXA_MCP_LLM_RENDERING=qwen/qwen3-coder-30b
+EXA_MCP_LLM_TRANSFORMATION=<LLM to be used>
+EXA_MCP_LLM_RENDERING=<LLM to be used>
 EXA_MCP_LLM_TEMPERATURE_RELEVANCE=0.0
 EXA_MCP_LLM_TEMPERATURE_TRANSLATION=0.0
 EXA_MCP_LLM_TEMPERATURE_QUERY_REWRITE=0.4

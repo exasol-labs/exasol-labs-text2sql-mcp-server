@@ -122,7 +122,7 @@ def t2s_human_language_to_sql(state: GraphState):
 
     try:
         vectordb_client = chromadb.PersistentClient(path=env['vectordb_persistent_storage'])
-        sql_collection = vectordb_client.get_or_create_collection(name="Questions_SQL_History")
+        sql_collection = vectordb_client.get_or_create_collection(name="SQL_Audit")
         tmp = sql_collection.query(query_texts=state['question'], n_results=1, include=["distances", "documents", "metadatas"])
 
         if float(tmp["distances"][0][0]) <= float(env['vectordb_similarity_distance']):
@@ -222,7 +222,7 @@ def t2s_execute_query(state: GraphState):
                 logger.debug("STEP: Storing or updating SQL statement in Vector-DB.")
 
             vectordb_client = chromadb.PersistentClient(path=env['vectordb_persistent_storage'])
-            sql_collection = vectordb_client.get_or_create_collection(name="Questions_SQL_History")
+            sql_collection = vectordb_client.get_or_create_collection(name="SQL_Audit")
 
             ## Check, if query exists in VectorDB
 
