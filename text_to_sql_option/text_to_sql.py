@@ -18,6 +18,8 @@ from sql_formatter.core import format_sql
 
 ## Project packages
 
+from exasol.ai.mcp.server.connection_factory import  get_oidc_user
+
 from exasol.ai.mcp.server.server_settings import ExaDbResult
 from text_to_sql_option.intro.intro import (
     env,
@@ -58,6 +60,8 @@ class CheckIsRelevant(BaseModel):
     )
 
 def t2s_check_relevance(state: GraphState) -> str:
+
+    print(get_oidc_user(None))
 
     set_logging_label(logging=LOGGING, logger=logger, label="----- t2s_check_relevance -----")
     start_time_relevance_test = time.time()

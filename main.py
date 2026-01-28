@@ -32,6 +32,8 @@ import click
 from exasol.ai.mcp.server import mcp_server
 from exasol.ai.mcp.server.mcp_server import ExasolMCPServer
 
+from exasol.ai.mcp.server.connection_factory import get_oidc_user
+
 ##
 ## Thext-to-SQL (GovernedSQL) packages
 ##
@@ -163,6 +165,7 @@ def main_http(transport, host, port) -> None:
 
     server = mcp_server()
 
+
     _register_text_to_sql(server)
     _register_text_to_sql_audit(server)
     _register_teach_sql(server)
@@ -171,6 +174,7 @@ def main_http(transport, host, port) -> None:
    ##  Finally, run the server
 
     server.run(transport=transport, host=host, port=port)
+
 
 
 ####################################
@@ -191,6 +195,8 @@ def main():
     _register_teach_sql(server)
 
     server.run()
+
+
 
 if __name__ == "__main__":
 

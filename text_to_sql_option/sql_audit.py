@@ -34,7 +34,7 @@ def text_to_sql_audit(search_text: str, db_schema: str, number_results: int) -> 
 
         search_text = "*" # f"*{search_text}*"
         vectordb_client = chromadb.PersistentClient(path=env['vectordb_persistent_storage'])
-        collection = vectordb_client.get_collection(name='Questions_SQL_History')
+        collection = vectordb_client.get_collection(name='SQL_Audit')
         result = collection.query(query_texts=[search_text],
                                n_results=number_results,
                                where= {'db_schema': db_schema },
