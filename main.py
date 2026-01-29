@@ -12,7 +12,11 @@
 ## Version 1.0.0                                                                                                      ##
 ## 2025-10-16 Dirk Beerbohm: - Initial public release; share same code base as the official MCP-Server                ##
 ########################################################################################################################
+from functools import partial
 
+from exasol.ai.mcp.server.db_connection import DbConnection
+from exasol.ai.mcp.server.server_settings import McpServerSettings
+from fastmcp.server.middleware.logging import LoggingMiddleware
 
 VERSION = '1.2.1'
 
@@ -22,6 +26,7 @@ VERSION = '1.2.1'
 
 import chromadb
 import click
+import logging
 #from dotenv import load_dotenv
 
 
@@ -55,21 +60,31 @@ from text_to_sql_option.intro.intro import (
 ## Entry-Point to the tools ##
 ##############################
 
-def text_to_sql(question: str, db_schema: str, state: GraphState):
 
-    #if not self.config.enable_text_to_sql:
-    #    raise RuntimeError("Text-to-SQL option is disabled")
+class Text2SQL:
 
-    set_logging_label(logging=LOGGING, logger=logger, label="##### Starting Text-to-SQL")
-    set_logging_label(logging=LOGGING, logger=logger, label=f"### Database schema: {db_schema}")
-    set_logging_label(logging=LOGGING, logger=logger, label=f"### Question: {question}")
+    def __init__(self, connection: DbConnection) -> None:
+        self.connection = connection
+        self.state: GraphState = GraphState()
 
-    state['question'] = question
-    state['db_schema'] = db_schema
+    def text_to_sql(self ,question: str, db_schema: str):
 
-    state = t2s_start_process(state)
+        #if not self.config.enable_text_to_sql:
+        #    raise RuntimeError("Text-to-SQL option is disabled")
 
-    return state
+  #      print("TK:"+str(self.connection.execute_query("SELECT 1").fetchall()))
+
+        set_logging_label(logging=LOGGING, logger=logger, label="##### Starting Text-to-SQL")
+        set_logging_label(logging=LOGGING, logger=logger, label=f"### Database schema: {db_schema}")
+        set_logging_label(logging=LOGGING, logger=logger, label=f"### Question: {question}")
+
+        self.state['question'] = question
+        self.state['db_schema'] = db_schema
+        self.state['connection'] = self.connection
+
+        state = t2s_start_process(self.state)
+
+        return state
 
 
 def sql_audit(search_text: str, db_schema: str, number_results: int=5):
@@ -95,8 +110,9 @@ def teach_sql(question: str, sql_statement: str, db_schema: str):
 #####################################################################
 
 def _register_text_to_sql(the_mcp_server: ExasolMCPServer) -> None:
+    text_to_sql_with_con = Text2SQL(the_mcp_server.connection).text_to_sql
     the_mcp_server.tool(
-        text_to_sql,
+        text_to_sql_with_con,
         description=(
             "The tool translates human questions / natural language questions into "
             "SQL statements and executes it against the database. "
@@ -164,15 +180,16 @@ def main_http(transport, host, port) -> None:
     ## Initiate the official Exasol MCP Server and register additional tools
 
     server = mcp_server()
+    #print(server.connection)
 
-
+#    server.add_middleware(LoggingMiddleware(logger=logging.getLogger()))
     _register_text_to_sql(server)
     _register_text_to_sql_audit(server)
     _register_teach_sql(server)
 
 
    ##  Finally, run the server
-
+#    logging.basicConfig(level=logging.DEBUG)
     server.run(transport=transport, host=host, port=port)
 
 

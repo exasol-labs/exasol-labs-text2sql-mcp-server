@@ -2,6 +2,7 @@
 
 import sys
 
+from exasol.ai.mcp.server.db_connection import DbConnection
 from loguru import logger
 from typing_extensions import TypedDict
 
@@ -15,6 +16,7 @@ env = get_environment()
 
 class GraphState(TypedDict):
     question: str                 # The natural language question
+    connection: DbConnection      # The database connection with Impersonation
     db_schema: str                # The database schema to be used
     sql_statement: str            # The generated SQL statement
     query_num_rows: int           # The number of rows returned

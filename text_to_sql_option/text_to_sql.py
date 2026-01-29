@@ -66,7 +66,7 @@ def t2s_check_relevance(state: GraphState) -> str:
     set_logging_label(logging=LOGGING, logger=logger, label="----- t2s_check_relevance -----")
     start_time_relevance_test = time.time()
 
-    schema = t2s_database_schema(db_schema=state['db_schema'])
+    schema = t2s_database_schema(connection=state['connection'], db_schema=state['db_schema'])
 
     system_prompt = f"""
     You are an assistant that checks if the given human question: 
@@ -114,7 +114,7 @@ def t2s_human_language_to_sql(state: GraphState):
 
     db_schema = state['db_schema']
 
-    schema = t2s_database_schema(db_schema)
+    schema = t2s_database_schema(state['connection'], db_schema)
 
     system_prompt = load_translation_prompt(db_schema=db_schema, schema=schema)
     system_prompt_length = len(system_prompt)
@@ -190,24 +190,25 @@ def t2s_check_sql_is_allowed(state: GraphState):
 def t2s_execute_query(state: GraphState):
 
     set_logging_label(logging=LOGGING, logger=logger, label="----- t2s_execute_query -----")
+    connection = state['connection']
 
     try:
         start_time_exa_conn = time.time()
-        with pyexasol.connect(dsn=env['dsn'], user=env['db_user'], password=env['db_password'], schema=state['db_schema']) as C:
-            elapsed_time(logging=LOGGING, logger=logger, start_time=start_time_exa_conn, label="Elapsed Time on Exasol-DB - Create Connection")
 
-            start_time_exa_query = time.time()
+        elapsed_time(logging=LOGGING, logger=logger, start_time=start_time_exa_conn, label="Elapsed Time on Exasol-DB - Create Connection")
 
-            rows = C.execute(state['sql_statement']).fetchall()
-            cols = C.meta.sql_columns(state['sql_statement'])
+        start_time_exa_query = time.time()
 
-            elapsed_time(logging=LOGGING, logger=logger, start_time=start_time_exa_query, label="Elapsed Time on Exasol-DB - Execute Query")
+        statement = connection.execute_query(state['sql_statement'])
+        rows = statement.fetchall()
 
-            col_names = tuple(cols.keys())
-            rows.insert(0, col_names)
+        elapsed_time(logging=LOGGING, logger=logger, start_time=start_time_exa_query, label="Elapsed Time on Exasol-DB - Execute Query")
 
-            state['query_result'] = str(ExaDbResult(rows))
-            state['query_num_rows'] = C.last_statement().rowcount()
+        col_names = statement.column_names()
+        rows.insert(0, col_names)
+
+        state['query_result'] = str(ExaDbResult(rows))
+        state['query_num_rows'] = statement.rowcount()
 
     except ExaError as e:
         state['sql_is_valid'] = "NO"
