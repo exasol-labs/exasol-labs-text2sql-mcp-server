@@ -1,4 +1,4 @@
-# Exasol MCP Server with Text-to-SQL option
+# Exasol MCP Server with Governed SQL option
 
 <p align="center">
 
@@ -20,6 +20,9 @@ Provides an LLM access to the Exasol database via MCP tools. Includes tools
 for reading the database metadata and executing data reading queries, and an  
 optional tool for (on-premise) translation of natural language into SQL statements  
 for the Exasol database.  
+
+__Usually known as Text-to SQL, we call it Governed SQL, as we control every step from  
+a natural language question to the database answer.__
   
 
 ## Disclaimer
@@ -46,6 +49,18 @@ Do not install both server, or activate both servers as this will lead into prob
 
 ## Version history
 
+__Version 1.3.0__: 
+- This MCP server does now fully rely on the official Exasol MCP Server by creating an  
+  MCP Server object and registering additional tools.
+- New tool: teach the MCP Server with a question and the corresponding SQL statement.
+- Now using the Connection Factory of the official MCP Server
+- Tested for Authentication via OAuth with Keycloak and OpenLDAP.  
+  See README-OAuth-Authentication.md for details.
+- Recommend Streamable HTTP as standard installation (for Enterprises)
+- __IMPORTANT__: This MCP Server offers the very same functionality as the official  
+  Exasol MCP Server. Do __not__ install both servers simultaneously or ensure that one
+  MCP Server is disabled. Otherwise, you may encounter problems.
+
 __Version 1.2.1__: 
 - Architecture Change to use the Hook-Up functionality of the official Exasol MCP-Server  
 - Ability to store a predefined question/SQL Statement combination in the underlying  
@@ -58,15 +73,19 @@ __Version 1.0.0__:
 
 ## Introduction
 
-Text-to-SQL is nothing unknown or rarely technology anymore. However, most of the solutions rely on  
-publicly served Large Langauge Models (LLM) by companies like OpenAI, or Anthropic. This contradicts  
-the principle of *Data  Sovereignty* where your keep full control of your data or metadata. Moving  
+Governed SQL (Text-to-SQL) is nothing unknown or rarely technology anymore. However, most of the  
+solutions rely on  publicly served Large Langauge Models (LLM) by companies like OpenAI, or Anthropic.  
+This contradicts the principle of *Data  Sovereignty* where your keep full control of your data or metadata. Moving  
 the transformation of natural language into SQL is not enough, as widely used AI Desktops, e.g.  
 Anthropic Claude utilize a public served LLM to render the results. To fully protect your data you  
 have to use an AI Desktop application which allows to use a self-hosted Large Language model.
 
 The MCP sever with the text-to-sql option can be used with commercially AI Desktops like Claude or  
 open source AI applications like Open-WebUI like Jan.ai.
+
+__This README will cover a centralized deployment via streamable http, only!__
+
+Refer to the official Exasol MCP Server documentation for other installation options.
 
 
 ## Features
@@ -82,16 +101,16 @@ open source AI applications like Open-WebUI like Jan.ai.
 - Generates a result
   
 
-### Workflow of Text-to-SQL Agent
+### Workflow of the Governed SQL Agent
 
-This is the workflow of the Text-to-SQL agent, coded with the langgraph library.
+This is the workflow of the Governed SQL agent, coded with the langgraph library.
 
 <img src="./text_to_sql_option/images/langgraph_workflow.png" width="640"  alt=""/>
   
 
 ## Prerequisites
 
-- [Python](https://www.python.org/) >= 3.10.
+- [Python](https://www.python.org/) >= 3.12.
 - MCP Client application, e.g. [Claude Desktop](https://claude.ai/download), or [Open-WebUI](https://github.com/open-webui/open-webui)
 
 * A dedicated Large Language Model (LLM) server with a LLM of your choice loaded, e.g.:  
@@ -110,7 +129,7 @@ any other LLM server application which supports the OpenAI API.
 Do not configure the Exasol supported MCP server and this MCP server at the same time within the  
 AI tool of your choice. This MCP server will use the same version numbers as the officially  
 supported Exasol MCP-Server. Equal version numbers indicate the same functionality, plus the  
-Text-to-SQL option.
+Governed-SQL option.
 
 Ensure the `uv` package is installed. If uncertain call
 ```bash
@@ -119,70 +138,11 @@ uv --version
 To install `uv`, please follow [the instructions](https://docs.astral.sh/uv/getting-started/installation/)
 in the `uv` official documentation.
   
-Depending on the AI Desktop application or Frontend there are two different installation methods,
-one with a configuration that calls the MCP-Server directly, the second option requires a 
-so-called proxy server.
 
 
-### Using the server with the Claude Desktop (and probably others).
+### Open-WebUI as end user client
 
-To enable the Claude Desktop using the Exasol MCP server, the latter must be listed
-in the configuration file `claude_desktop_config.json`.
-
-To find the configuration file, click on the Settings and navigate to the
-“Developer” tab. This section contains options for configuring MCP servers and other  
-developer features. Click the “Edit Config” button to open the configuration file in  
-the editor of your choice.
-
-Add the Exasol MCP server to the list of MCP servers as shown in this configuration
-example.
-```json
-{
-  "mcpServers": {
-    "exasol_db": {
-      "command": "uvx",
-      "args": ["--from exasol-mcp-server-governed-sql exasol-mcp-server"],
-      "env": {
-        "EXA_DSN": "exasol-server-hostname:8563",
-        "EXA_USER": "my-user-name",
-        "EXA_PASSWORD": "my-password",
-        "EXA_MCP_SETTINGS": "path-to-your-settings-file (see below)"
-      }
-    },
-    "other_server": {}
-  }
-}
-```
-
-With these settings, uv will install and run the "exasol-mcp-package" in an
-ephemeral environment, using the default `uv` parameters and default server settings.  
-  
-Other AI Desktop applications may use the same syntax to configure MCP servers.  
-Consult  the documentation of the respective AI Desktop application for detailed   
-information about configuring the MCP server.
-
-### Using the server via OpenAPI interface
-
-The use of the OpenAPI interface is required for the usage of Open-WebUI and needs an  
-additional software, called `mcpo`
-
-First, install the prox server with
-
-```
-pip install mcpo
-```
-
-and start the proxy server 
-
-```
-mcpo --port 8000 --env EXA_DSN=<database-dsn> --env EXA_USER=<database-username> --env EXA_PASSWORD=<user-password> --env EXA_MCP_SETTINGS=<path-to-settings-file>
--- uvx --from exasol-mcp-server-t2s exasol-mcp-server
-```
-
-Configure you AI application, e.g. Open-WebUI, of choice for the tool server and point him to the proxy server.
-
-However, Open-WebUI meanwhile can be configured for a direct use with MCP-Servers (http protocol), the above steps  
-are for informational purpose, but may be the safer option as of now.
+Refer to README-OAuth-Authentication for detailed installation steps of Open-WebUI.
 
 ## Configuration settings
 
@@ -257,21 +217,19 @@ The following json shows the default configuration settings.
     "like_pattern": "",
     "regexp_pattern": ""
   },
-  "enable_read_query": false,
-  "enable_text_to_sql": true
+  "enable_read_query": false
 }
 ```
 
-### Settings for the Text-to-SQL option
+### Settings for the Governed SQL option
 
 The specific settings for the Text-to-SQL option are to be set in a ".env" file in your  
-home directory file as follows:
+home directory file as follows:  
+
 ```
-EXA_MCP_SECRET_KEY=<mcp-server-secret>
 EXA_DSN=<exasol-database-dsn>
-EXA_USER=<db-user>
+EXA_USER=<technical-db-user>
 EXA_PASSWORD=<db-password>>
-EXA_CRYPTED_PASSWORD=<some crypted password, set by mcp_exasol_passwords.py>
 EXA_MCP_SETTINGS=<path-to-mcp-server-settings>
 EXA_MCP_LLM_SERVER_URL=<URL for LLM server>
 EXA_MCP_LLM_SERVER_API_KEY=not-needed
@@ -297,14 +255,9 @@ EXA_MCP_SETTINGS environment variable.
 In general, the temperature defines, how strict the LLM will generate answers. The higher the temperature,   
 the more variation you will see.
 
+__These settings allow the MCP Server to start without authentication requirements. Refer to the file  
+README-OAuth-Authentication.md for the required steps to enable authentication.__
 
-They secret key and the encrypted password shall be created with the 
-
-```
-mcp_exasol_passwords.py
-```
-
-tool. For security reasons, keep this tool in a safe place and restrict the access to yourself only!  
   
   
 ### Large Language Models to consider
