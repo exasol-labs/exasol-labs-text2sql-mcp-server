@@ -6,7 +6,6 @@
 ##############################################################
 
 import chromadb
-import pyexasol
 import re
 import time
 
@@ -60,8 +59,9 @@ class CheckIsRelevant(BaseModel):
     )
 
 def t2s_check_relevance(state: GraphState) -> str:
-
-    print(get_oidc_user(None))
+    if LOGGING == 'True' and LOGGING_MODE == 'debug':
+        # print(get_oidc_user(None))
+        ...
 
     set_logging_label(logging=LOGGING, logger=logger, label="----- t2s_check_relevance -----")
     start_time_relevance_test = time.time()
@@ -193,9 +193,6 @@ def t2s_execute_query(state: GraphState):
     connection = state['connection']
 
     try:
-        start_time_exa_conn = time.time()
-
-        elapsed_time(logging=LOGGING, logger=logger, start_time=start_time_exa_conn, label="Elapsed Time on Exasol-DB - Create Connection")
 
         start_time_exa_query = time.time()
 

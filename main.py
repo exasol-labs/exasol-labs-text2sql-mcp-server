@@ -12,13 +12,10 @@
 ## Version 1.0.0                                                                                                      ##
 ## 2025-10-16 Dirk Beerbohm: - Initial public release; share same code base as the official MCP-Server                ##
 ########################################################################################################################
-from functools import partial
 
 from exasol.ai.mcp.server.db_connection import DbConnection
-from exasol.ai.mcp.server.server_settings import McpServerSettings
-from fastmcp.server.middleware.logging import LoggingMiddleware
 
-VERSION = '1.2.1'
+VERSION = '1.3.0'
 
 ##
 ## Standard Python packages
@@ -26,8 +23,6 @@ VERSION = '1.2.1'
 
 import chromadb
 import click
-import logging
-#from dotenv import load_dotenv
 
 
 ##
@@ -36,7 +31,6 @@ import logging
 
 from exasol.ai.mcp.server import mcp_server
 from exasol.ai.mcp.server.mcp_server import ExasolMCPServer
-
 from exasol.ai.mcp.server.connection_factory import get_oidc_user
 
 ##
@@ -68,11 +62,6 @@ class Text2SQL:
         self.state: GraphState = GraphState()
 
     def text_to_sql(self ,question: str, db_schema: str):
-
-        #if not self.config.enable_text_to_sql:
-        #    raise RuntimeError("Text-to-SQL option is disabled")
-
-  #      print("TK:"+str(self.connection.execute_query("SELECT 1").fetchall()))
 
         set_logging_label(logging=LOGGING, logger=logger, label="##### Starting Text-to-SQL")
         set_logging_label(logging=LOGGING, logger=logger, label=f"### Database schema: {db_schema}")
@@ -180,16 +169,16 @@ def main_http(transport, host, port) -> None:
     ## Initiate the official Exasol MCP Server and register additional tools
 
     server = mcp_server()
-    #print(server.connection)
 
-#    server.add_middleware(LoggingMiddleware(logger=logging.getLogger()))
+
+
     _register_text_to_sql(server)
     _register_text_to_sql_audit(server)
     _register_teach_sql(server)
 
 
    ##  Finally, run the server
-#    logging.basicConfig(level=logging.DEBUG)
+
     server.run(transport=transport, host=host, port=port)
 
 

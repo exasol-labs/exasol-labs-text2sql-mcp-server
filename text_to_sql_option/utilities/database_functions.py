@@ -24,7 +24,6 @@ from text_to_sql_option.utilities.helpers import elapsed_time
 def t2s_database_schema(connection: DbConnection, db_schema: str) -> str:
     start_time_exa_conn = time.time()
 
-    elapsed_time(logging=LOGGING, logger=logger, start_time=start_time_exa_conn, label="Elapsed Time on Exasol-DB - Create Connection")
     metadata_query = f"""
         SELECT 
             COLUMN_SCHEMA,
