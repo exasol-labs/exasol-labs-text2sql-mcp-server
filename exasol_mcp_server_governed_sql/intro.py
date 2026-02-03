@@ -6,7 +6,7 @@ from exasol.ai.mcp.server.db_connection import DbConnection
 from loguru import logger
 from typing_extensions import TypedDict
 
-from text_to_sql_option.utilities.helpers import get_environment
+from exasol_mcp_server_governed_sql.helpers import get_environment
 
 env = get_environment()
 

@@ -17,29 +17,27 @@ from sql_formatter.core import format_sql
 
 ## Project packages
 
-from exasol.ai.mcp.server.connection_factory import  get_oidc_user
-
 from exasol.ai.mcp.server.server_settings import ExaDbResult
-from text_to_sql_option.intro.intro import (
+from exasol_mcp_server_governed_sql.intro import (
     env,
     GraphState,
     logger,
     LOGGING,
     LOGGING_MODE
 )
-from text_to_sql_option.utilities.helpers import elapsed_time
-from text_to_sql_option.utilities.llm import invoke_llm
-from text_to_sql_option.utilities.helpers import set_logging_label
-from text_to_sql_option.utilities.database_functions import t2s_database_schema
-from text_to_sql_option.utilities.database_functions import get_sql_query_type
-from text_to_sql_option.utilities.load_prompts import load_translation_prompt
-from text_to_sql_option.utilities.load_prompts import load_render_prompt
-from text_to_sql_option.secondary_nodes.info_messages_llm import (
+from exasol_mcp_server_governed_sql.helpers import elapsed_time
+from exasol_mcp_server_governed_sql.llm import invoke_llm
+from exasol_mcp_server_governed_sql.helpers import set_logging_label
+from exasol_mcp_server_governed_sql.database_functions import t2s_database_schema
+from exasol_mcp_server_governed_sql.database_functions import get_sql_query_type
+from exasol_mcp_server_governed_sql.load_prompts import load_translation_prompt
+from exasol_mcp_server_governed_sql.load_prompts import load_render_prompt
+from exasol_mcp_server_governed_sql.info_messages_llm import (
     t2s_info_query_not_relevant,
     t2s_info_unable_query_type,
     t2s_info_unable_create_sql
 )
-from text_to_sql_option.secondary_nodes.routing import (
+from exasol_mcp_server_governed_sql.routing import (
     t2s_check_sql_router,
     t2s_relevance_router,
     t2s_sql_valid_router,
@@ -59,9 +57,6 @@ class CheckIsRelevant(BaseModel):
     )
 
 def t2s_check_relevance(state: GraphState) -> str:
-    if LOGGING == 'True' and LOGGING_MODE == 'debug':
-        # print(get_oidc_user(None))
-        ...
 
     set_logging_label(logging=LOGGING, logger=logger, label="----- t2s_check_relevance -----")
     start_time_relevance_test = time.time()

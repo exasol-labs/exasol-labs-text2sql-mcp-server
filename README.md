@@ -105,7 +105,7 @@ Refer to the official Exasol MCP Server documentation for other installation opt
 
 This is the workflow of the Governed SQL agent, coded with the langgraph library.
 
-<img src="./text_to_sql_option/images/langgraph_workflow.png" width="640"  alt=""/>
+<img src="exasol_mcp_server_governed_sql/images/langgraph_workflow.png" width="640"  alt=""/>
   
 
 ## Prerequisites
@@ -376,7 +376,7 @@ As an example, the following request:
 
 shows the following SQL statement
 
-![img.png](./text_to_sql_option/images/sql_history.png)
+![img.png](exasol_mcp_server_governed_sql/images/sql_history.png)
 
 Please beware, the quality of the search results depend on the selected LLM. If you are using a different 
 LLM you might have a different experience.

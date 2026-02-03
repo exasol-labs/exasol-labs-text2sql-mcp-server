@@ -2,19 +2,17 @@
 ## Database / SQL specific functions ##
 #######################################
 
-import pyexasol
 import time
 
 from exasol.ai.mcp.server.db_connection import DbConnection
 from sqlglot import exp, parse_one
 from sqlglot.errors import ParseError
 
-from text_to_sql_option.intro.intro import (
-    env,
+from exasol_mcp_server_governed_sql.intro import (
     logger,
     LOGGING,
 )
-from text_to_sql_option.utilities.helpers import elapsed_time
+from exasol_mcp_server_governed_sql.helpers import elapsed_time
 
 
 ############################################################

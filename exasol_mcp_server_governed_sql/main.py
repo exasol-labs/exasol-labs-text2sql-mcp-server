@@ -31,22 +31,20 @@ import click
 
 from exasol.ai.mcp.server import mcp_server
 from exasol.ai.mcp.server.mcp_server import ExasolMCPServer
-from exasol.ai.mcp.server.connection_factory import get_oidc_user
 
 ##
 ## Thext-to-SQL (GovernedSQL) packages
 ##
 
-from text_to_sql_option.utilities.helpers import set_logging_label
-from text_to_sql_option.sql_audit import text_to_sql_audit
-from text_to_sql_option.text_to_sql import t2s_start_process
-from text_to_sql_option.learn_sql import learn_sql
-from text_to_sql_option.intro.intro import (
+from exasol_mcp_server_governed_sql.helpers import set_logging_label
+from exasol_mcp_server_governed_sql.sql_audit import text_to_sql_audit
+from exasol_mcp_server_governed_sql.text_to_sql import t2s_start_process
+from exasol_mcp_server_governed_sql.learn_sql import learn_sql
+from exasol_mcp_server_governed_sql.intro import (
     env,
     GraphState,
     logger,
     LOGGING,
-    LOGGING_MODE,
 )
 
 

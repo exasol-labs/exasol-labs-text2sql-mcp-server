@@ -5,16 +5,14 @@ import time
 
 from datetime import datetime
 
-from text_to_sql_option.utilities.helpers import get_environment
-
-from text_to_sql_option.intro.intro import (
+from exasol_mcp_server_governed_sql.intro import (
     env,
     logger,
     LOGGING,
     LOGGING_MODE
 )
 
-from text_to_sql_option.utilities.helpers import elapsed_time
+from exasol_mcp_server_governed_sql.helpers import elapsed_time
 
 
 def learn_sql(question: str, sql_statement: str, db_schema: str) -> list:

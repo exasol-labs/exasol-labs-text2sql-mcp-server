@@ -8,11 +8,10 @@
 import chromadb
 import datetime
 import sys
-import time
 
 from pydantic import BaseModel, Field
 
-from text_to_sql_option.utilities.helpers import get_environment
+from exasol_mcp_server_governed_sql.helpers import get_environment
 
 
 ##
