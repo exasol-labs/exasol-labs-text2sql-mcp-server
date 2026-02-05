@@ -49,6 +49,10 @@ Do not install both server, or activate both servers as this will lead into prob
 
 ## Version history
 
+__Version 1.3.0.2__:
+
+- Corrected a bug which prevented "uv tool install" to install successfully.
+
 __Version 1.3.0__: 
 - This MCP server does now fully rely on the official Exasol MCP Server by creating an  
   MCP Server object and registering additional tools.
