@@ -49,6 +49,10 @@ Do not install both server, or activate both servers as this will lead into prob
 
 ## Version history
 
+__-Version 1.3.0.3__:
+
+- Updated README.md file
+
 __Version 1.3.0.2__:
 
 - Corrected a bug which prevented "uv tool install" to install successfully.
@@ -110,7 +114,7 @@ Refer to the official Exasol MCP Server documentation for other installation opt
 This is the workflow of the Governed SQL agent, coded with the langgraph library.
 
 <img src="exasol_mcp_server_governed_sql/images/langgraph_workflow.png" width="640"  alt=""/>
-  
+
 
 ## Prerequisites
 
@@ -132,8 +136,8 @@ any other LLM server application which supports the OpenAI API.
 
 Do not configure the Exasol supported MCP server and this MCP server at the same time within the  
 AI tool of your choice. This MCP server will use the same version numbers as the officially  
-supported Exasol MCP-Server. Equal version numbers indicate the same functionality, plus the  
-Governed-SQL option.
+supported Exasol MCP-Server, plus a four digit to show different patches or add-ons.  
+Equal version numbers indicate the same functionality, plus the Governed-SQL option.
 
 Ensure the `uv` package is installed. If uncertain call
 ```bash
@@ -142,11 +146,26 @@ uv --version
 To install `uv`, please follow [the instructions](https://docs.astral.sh/uv/getting-started/installation/)
 in the `uv` official documentation.
   
+To install the MCP-Server execute the following command:
 
+    uv tool install exasol-mcp-server-governed-sql@latest
+
+You can start the server like:
+
+    exasol-mcp-server-goverfned-sql-http -- host="0.0.0.0" --port=<desired port number>
+
+
+Optionally, you can specify a dedicated IP address of your server the MCP-Server should listen on.  
+Before starting, create a ".env" file (if not existing already) and add the environment variables  
+as shon below. This will start the MCP-Server without authentication. For authentication, please  
+refer to the README-OAuth-Authentication.md file.
 
 ### Open-WebUI as end user client
 
-Refer to README-OAuth-Authentication for detailed installation steps of Open-WebUI.
+Open-WebUI can be deployed in various options. Please refer to the documentation and install  
+with you preferred deployment type. 
+Refer to README-OAuth-Authentication for detailed configuration   
+steps of Open-WebUI for an OAuth Authentication deployment.
 
 ## Configuration settings
 
