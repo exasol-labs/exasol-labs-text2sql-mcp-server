@@ -39,16 +39,16 @@ def get_environment() -> dict:
 
     load_dotenv()
 
-    secret_key = os.getenv("EXA_MCP_SECRET_KEY")
-    assert secret_key is not None, "Please set 'MCP_SERVER_EXASOL_SECRET_KEY' environment variable"
-    fernet = Fernet(secret_key)
-    stored_password = os.getenv("EXA_CRYPTED_PASSWORD")
-    db_password =  fernet.decrypt(stored_password).decode()
+    #secret_key = os.getenv("EXA_MCP_SECRET_KEY")
+    #assert secret_key is not None, "Please set 'MCP_SERVER_EXASOL_SECRET_KEY' environment variable"
+    #fernet = Fernet(secret_key)
+    #stored_password = os.getenv("EXA_CRYPTED_PASSWORD")
+    #db_password =  fernet.decrypt(stored_password).decode()
 
     env = {
             "dsn": os.getenv("EXA_DSN"),
             "db_user": os.getenv("EXA_USER"),
-            "db_password": db_password,
+            "db_password": os.getenv("EXA_PASSWORD"),
             "llm_server_url": os.getenv("EXA_MCP_LLM_SERVER_URL"),
             "llm_server_api_token": os.getenv("EXA_MCP_LLM_SERVER_API_KEY"),
             "llm_server_model_check": os.getenv("EXA_MCP_LLM_TRANSFORMATION"),

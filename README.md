@@ -49,7 +49,11 @@ Do not install both server, or activate both servers as this will lead into prob
 
 ## Version history
 
-__-Version 1.3.0.3__:
+__Version 1.3.0.5__:
+
+- Corrected Password handling (removed old code)
+
+__Version 1.3.0.3__:
 
 - Updated README.md file
 
@@ -263,7 +267,7 @@ EXA_MCP_LLM_TEMPERATURE_TRANSLATION=0.0
 EXA_MCP_LLM_TEMPERATURE_QUERY_REWRITE=0.4
 EXA_MCP_LLM_TEMPERATURE_RENDERING=0.0
 EXA_MCP_LLM_TEMPERATURE_INFO=0.7
-EXA_MCP_VECTORDB_FILE=<path-to-vector-database-location>>
+EXA_MCP_VECTORDB_FILE=<path-to-vector-database-location>
 EXA_MCP_VECTORDB_SIMILARITY_DISTANCE=0.3
 EXA_MCP_LOGGER=True
 EXA_MCP_LOGGER_MODE=(INFO|DEBUG)
