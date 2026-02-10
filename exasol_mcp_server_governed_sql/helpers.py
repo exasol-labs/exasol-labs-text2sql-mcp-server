@@ -64,13 +64,9 @@ def get_environment() -> dict:
             "temperature_query_rewrite": os.getenv("EXA_MCP_LLM_TEMPERATURE_QUERY_REWRITE"),
             "temperature_rendering": os.getenv("EXA_MCP_LLM_TEMPERATURE_RENDERING"),
             "temperature_info": os.getenv("EXA_MCP_LLM_TEMPERATURE_INFO"),
-
-
-
-
-
-
         }
+
+    print(env)
 
     return env
 

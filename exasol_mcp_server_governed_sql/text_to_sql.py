@@ -137,7 +137,6 @@ def t2s_human_language_to_sql(state: GraphState):
     if LOGGING == 'True' and LOGGING_MODE == 'debug':
         logger.debug(f"System-Prompt for translation: {system_prompt}")
 
-
     start_time_llm = time.time()
     result = invoke_llm(base=env["llm_server_url"],
                         api=env["llm_server_api_token"],
