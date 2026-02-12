@@ -49,6 +49,10 @@ Do not install both server, or activate both servers as this will lead into prob
 
 ## Version history
 
+__Version 1.5.0.0__:
+
+- Now changes, just following the official Exasol MCP Server!
+
 __Version 1.3.0.5__:
 
 - Corrected Password handling (removed old code)

@@ -1,6 +1,6 @@
 [project]
 name = "exasol-mcp-server-governed-sql"
-version = "1.3.0.5"
+version = "1.5.0.0"
 requires-python = ">=3.12,<3.14"   # Restriction is due to numpy
 description = "Exasol MCP Server with a experimental text-to-SQL option."
 authors = [
@@ -27,7 +27,7 @@ repository = "https://github.com/exasol-labs/exasol-labs-text2sql-mcp-server"
 homepage = "https://github.com/exasol-labs/exasol-labs-text2sql-mcp-server"
 
 [tool.poetry.dependencies]
-exasol-mcp-server = "^1.3.0"
+exasol-mcp-server = "^1.5.0"
 chromadb = "^1.4.1"
 langchain-openai = "^1.1.7"
 langgraph = "^1.0.7"
