@@ -17,7 +17,7 @@ from dotenv import load_dotenv, find_dotenv
 
 def get_environment() -> dict:
 
-    load_dotenv(find_dotenv())
+    load_dotenv()
 
     env = {
             "dsn": os.getenv("EXA_DSN"),

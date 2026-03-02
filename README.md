@@ -5,13 +5,13 @@
 <a href="https://opensource.org/licenses/MIT">
     <img src="https://img.shields.io/pypi/l/exasol_mcp_server-governed-sql" alt="License">
 </a>
-<a href="https://pypi.org/project/exasol_mcp_server/">
+<a href="https://pypi.org/project/exasol_mcp_server-governed-sql/">
     <img src="https://img.shields.io/pypi/dm/exasol_mcp_server-governed-sql" alt="Downloads">
 </a>
-<a href="https://pypi.org/project/exasol_mcp_server/">
+<a href="https://pypi.org/project/exasol_mcp_server-governed-sql/">
     <img src="https://img.shields.io/pypi/pyversions/exasol_mcp_server-governed-sql" alt="Supported Python Versions">
 </a>
-<a href="https://pypi.org/project/exasol_mcp_server/">
+<a href="https://pypi.org/project/exasol_mcp_server-governed-sql/">
     <img src="https://img.shields.io/pypi/v/exasol_mcp_server-governed-sql" alt="PyPi Package">
 </a>
 </p>
