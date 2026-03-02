@@ -19,8 +19,6 @@ def get_environment() -> dict:
 
     load_dotenv(find_dotenv())
 
-    db_password =  decrypt_password()
-    print("Password:", db_password)
     env = {
             "dsn": os.getenv("EXA_DSN"),
             "db_user": os.getenv("EXA_USER"),
