@@ -2,6 +2,12 @@
 ## Infer the large Language Model ##
 ####################################
 
+## DO NOT SEND TELEMETRY TO POSTHOG !!! ##
+
+import os
+os.environ["LANGCHAIN_TELEMETRY"] = "false"
+os.environ["LANGCHAIN_TRACING_V2"] = "false"
+
 from langchain_openai import ChatOpenAI
 from langchain_core.prompts import ChatPromptTemplate
 from pydantic import BaseModel

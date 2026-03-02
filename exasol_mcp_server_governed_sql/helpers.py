@@ -6,28 +6,8 @@ import loguru
 import os
 import time
 
-from cryptography.fernet import Fernet
-from dotenv import load_dotenv
 
-
-############################################################################
-## Get the user password stored encrypted on the desktop file system      ##
-##------------------------------------------------------------------------##
-## This tools requires special attention. Limit access to this tool for   ##
-## yourself only. Execution rights to this tool enables read of password. ##
-############################################################################
-
-def get_user_password() -> str:
-
-    load_dotenv()
-
-    secret_key = os.getenv("MCP_SERVER_EXASOL_SECRET_KEY")
-    assert secret_key is not None, "Please set SECRET_KEY environment variable"
-    fernet = Fernet(secret_key)
-
-    stored_password = os.getenv("MCP_EXASOL_DATABASE_PASSWORD")
-
-    return fernet.decrypt(stored_password).decode()
+from dotenv import load_dotenv, find_dotenv
 
 
 ###############################
@@ -37,14 +17,10 @@ def get_user_password() -> str:
 
 def get_environment() -> dict:
 
-    load_dotenv()
+    load_dotenv(find_dotenv())
 
-    #secret_key = os.getenv("EXA_MCP_SECRET_KEY")
-    #assert secret_key is not None, "Please set 'MCP_SERVER_EXASOL_SECRET_KEY' environment variable"
-    #fernet = Fernet(secret_key)
-    #stored_password = os.getenv("EXA_CRYPTED_PASSWORD")
-    #db_password =  fernet.decrypt(stored_password).decode()
-
+    db_password =  decrypt_password()
+    print("Password:", db_password)
     env = {
             "dsn": os.getenv("EXA_DSN"),
             "db_user": os.getenv("EXA_USER"),

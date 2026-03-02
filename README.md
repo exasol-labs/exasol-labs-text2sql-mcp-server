@@ -3,16 +3,16 @@
 <p align="center">
 
 <a href="https://opensource.org/licenses/MIT">
-    <img src="https://img.shields.io/pypi/l/exasol_mcp_server" alt="License">
+    <img src="https://img.shields.io/pypi/l/exasol_mcp_server-governed-sql" alt="License">
 </a>
 <a href="https://pypi.org/project/exasol_mcp_server/">
-    <img src="https://img.shields.io/pypi/dm/exasol_mcp_server" alt="Downloads">
+    <img src="https://img.shields.io/pypi/dm/exasol_mcp_server-governed-sql" alt="Downloads">
 </a>
 <a href="https://pypi.org/project/exasol_mcp_server/">
-    <img src="https://img.shields.io/pypi/pyversions/exasol_mcp_server" alt="Supported Python Versions">
+    <img src="https://img.shields.io/pypi/pyversions/exasol_mcp_server-governed-sql" alt="Supported Python Versions">
 </a>
 <a href="https://pypi.org/project/exasol_mcp_server/">
-    <img src="https://img.shields.io/pypi/v/exasol_mcp_server" alt="PyPi Package">
+    <img src="https://img.shields.io/pypi/v/exasol_mcp_server-governed-sql" alt="PyPi Package">
 </a>
 </p>
 
@@ -49,9 +49,19 @@ Do not install both server, or activate both servers as this will lead into prob
 
 ## Version history
 
+__Version 1.5.0.2__:
+
+- Password for 'EXA_PASSWORD' will be encrypted now with a tool and decrypted by MCP-Server.
+  Should not be visible in .env file anymore.
+- Changes in README
+
+__Version 1.5.0.1__:
+
+- Corrected minimum Python requirements
+
 __Version 1.5.0.0__:
 
-- Now changes, just following the official Exasol MCP Server!
+- No changes, just following the official Exasol MCP Server!
 
 __Version 1.3.0.5__:
 
@@ -160,7 +170,7 @@ To install the MCP-Server execute the following command:
 
 You can start the server like:
 
-    exasol-mcp-server-goverfned-sql-http -- host="0.0.0.0" --port=<desired port number>
+    exasol-mcp-server-governed-sql-http -- host="0.0.0.0" --port=<desired port number>
 
 
 Optionally, you can specify a dedicated IP address of your server the MCP-Server should listen on.  

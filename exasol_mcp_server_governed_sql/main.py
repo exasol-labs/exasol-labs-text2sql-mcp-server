@@ -15,7 +15,7 @@
 
 from exasol.ai.mcp.server.db_connection import DbConnection
 
-VERSION = '1.3.0'
+VERSION = '1.5.0.2'
 
 ##
 ## Standard Python packages

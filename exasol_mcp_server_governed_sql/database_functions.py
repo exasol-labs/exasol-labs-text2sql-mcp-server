@@ -20,7 +20,8 @@ from exasol_mcp_server_governed_sql.helpers import elapsed_time
 #############################################################
 
 def t2s_database_schema(connection: DbConnection, db_schema: str) -> str:
-    start_time_exa_conn = time.time()
+
+    print("Connection:", connection)
 
     metadata_query = f"""
         SELECT 
