@@ -4,7 +4,7 @@
 
 import time
 
-from exasol.ai.mcp.server.db_connection import DbConnection
+from exasol.ai.mcp.server.connection.db_connection import DbConnection
 from sqlglot import exp, parse_one
 from sqlglot.errors import ParseError
 

@@ -13,9 +13,9 @@
 ## 2025-10-16 Dirk Beerbohm: - Initial public release; share same code base as the official MCP-Server                ##
 ########################################################################################################################
 
-from exasol.ai.mcp.server.db_connection import DbConnection
+from exasol.ai.mcp.server.connection.db_connection import DbConnection
 
-VERSION = '1.5.0.2'
+VERSION = '1.6.2.1'
 
 ##
 ## Standard Python packages
@@ -29,8 +29,8 @@ import click
 ## The "underlying" Exasol MCP Server
 ##
 
-from exasol.ai.mcp.server import mcp_server
-from exasol.ai.mcp.server.mcp_server import ExasolMCPServer
+from exasol.ai.mcp.server.main import mcp_server
+from exasol.ai.mcp.server.tools.mcp_server import ExasolMCPServer
 
 ##
 ## Thext-to-SQL (GovernedSQL) packages

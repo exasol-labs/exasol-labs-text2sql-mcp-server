@@ -1,4 +1,4 @@
-FROM python:3.12-slim
+FROM python:3.13-slim AS build
 
 # Set environment variables
 ENV PYTHONUNBUFFERED=1 \
@@ -11,17 +11,25 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     ca-certificates \
     && rm -rf /var/lib/apt/lists/*
 
-# Install uv
-COPY --from=ghcr.io/astral-sh/uv:latest /uv /bin/uv
+RUN pip install poetry
 
 WORKDIR /app
 
-# Create necessary directories upfront
-# This prevents the 'Permission Denied' / 'File Not Found' errors
-RUN mkdir -p /data/vectordb /app/logs
+COPY pyproject.toml poetry.lock README.md ./
+COPY exasol_mcp_server_governed_sql/ ./exasol_mcp_server_governed_sql/
 
-# Install the package (pin fastmcp < 3 as recommended in startup logs)
-RUN uv pip install exasol-mcp-server-governed-sql
+RUN poetry build
+
+FROM python:3.13-slim
+
+WORKDIR /app
+COPY --from=build app/dist dist
+
+RUN pip install dist/*.whl
+
+
+
+
 
 EXPOSE 9100
 

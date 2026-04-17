@@ -17,7 +17,7 @@ from sql_formatter.core import format_sql
 
 ## Project packages
 
-from exasol.ai.mcp.server.server_settings import ExaDbResult
+#from exasol.ai.mcp.server.setup.server_settings import ExaDbResult
 from exasol_mcp_server_governed_sql.intro import (
     env,
     GraphState,
@@ -74,6 +74,11 @@ def t2s_check_relevance(state: GraphState) -> str:
     
     Answer with "YES" if question relates to the given schema, otherwise answer with "NO", only!
     """
+
+
+    ## Enter here DEBUG output of System prompt include Metadata schema.
+
+
     start_time_relevance_test = time.time()
     result = invoke_llm(base=env["llm_server_url"],
                                       api=env["llm_server_api_token"],
@@ -109,7 +114,7 @@ def t2s_human_language_to_sql(state: GraphState):
 
     db_schema = state['db_schema']
 
-    schema = t2s_database_schema(state['connection'], db_schema)
+    schema = t2s_database_schema(connection=state['connection'], db_schema=state['db_schema'])
 
     system_prompt = load_translation_prompt(db_schema=db_schema, schema=schema)
     system_prompt_length = len(system_prompt)
@@ -198,7 +203,7 @@ def t2s_execute_query(state: GraphState):
         col_names = statement.column_names()
         rows.insert(0, col_names)
 
-        state['query_result'] = str(ExaDbResult(rows))
+        state['query_result'] = str(rows)
         state['query_num_rows'] = statement.rowcount()
 
     except ExaError as e:

@@ -51,8 +51,6 @@ Do not install both server, or activate both servers as this will lead into prob
 
 __Version 1.5.0.2__:
 
-- Password for 'EXA_PASSWORD' will be encrypted now with a tool and decrypted by MCP-Server.
-  Should not be visible in .env file anymore.
 - Changes in README
 
 __Version 1.5.0.1__:
