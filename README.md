@@ -49,6 +49,15 @@ Do not install both server, or activate both servers as this will lead into prob
 
 ## Version history
 
+__Version 1.6.2.4__:
+
+- Enhancements and bug fixes (nothing user visible, no added functionality)
+__Version 1.6.2.3__:
+
+- Adaption to changed structure of native Exasol MCP Server
+- Relevance Check now optional, to be configured via ENVIRONMENT variable
+- Bug Fixes
+
 __Version 1.5.0.2__:
 
 - Changes in README
@@ -274,6 +283,7 @@ EXA_MCP_LLM_SERVER_URL=<URL for LLM server>
 EXA_MCP_LLM_SERVER_API_KEY=not-needed
 EXA_MCP_LLM_TRANSFORMATION=<LLM to be used>
 EXA_MCP_LLM_RENDERING=<LLM to be used>
+EXA_MCP_LLM_RELEVANCE_CHECK: "true" 
 EXA_MCP_LLM_TEMPERATURE_RELEVANCE=0.0
 EXA_MCP_LLM_TEMPERATURE_TRANSLATION=0.0
 EXA_MCP_LLM_TEMPERATURE_QUERY_REWRITE=0.4
