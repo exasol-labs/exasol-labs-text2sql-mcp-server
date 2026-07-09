@@ -1,3 +1,30 @@
+# IMPORTANT NOTE
+
+
+## EXASOL-MCP-SERVER-GOVERNED-SQL has been archived!
+
+Time evolves, so does technology in AI. The speed of new evolutions in AI is dramatic.  
+When we started with Text-to-SQL, which we later called Governed-SQL, AI as we know  
+it today did not exist or was not ready, at this time. We created Governed-SQL to offer,  
+on an experimental basis, Text-to-SQL or Conversational AI in strict on-premises environments.  
+We hit lots  of interests and started quite a few projects. We learned a lot about customer requirements  
+and offered an alternative to cloud-based solutions. The initial tests with the MCP server  
+eventually led to the officially supported Exasol MCP server, where both solutions finally  
+shared the same code base, The "GovernedSQL" version with additional tools.  
+  
+
+Saying this, we have decided to continue with the official MCP Server only. It offers  
+all we need to create solutions for Conversational AI in an agentic fashion. Our tests  
+showed us that the results are equally or better than our experimental MCP Server with  
+Governed-SQL.  
+
+You find the Exasol MCP Server on our github page:
+
+[https://github.com/exasol/mcp-server](Exasol MCP Server)
+
+Happy Exasoling!
+
+
 # Exasol MCP Server with Governed SQL option
 
 <p align="center">
