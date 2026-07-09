@@ -1,3 +1,32 @@
+
+# IMPORTANT NOTE
+
+
+## EXASOL-MCP-SERVER-GOVERNED-SQL has been archived!
+
+Time evolves, so does technology in AI. The speed of new evolutions in AI is dramatic.  
+When we started with Text-to-SQL, which we later called Governed-SQL, AI as we know  
+it today did not exist or was not ready, at this time. We created Governed-SQL to offer,  
+on an experimental basis, Text-to-SQL or Conversational AI in strict on-premises environments.  
+We hit lots  of interests and started quite a few projects. We learned a lot about customer requirements  
+and offered an alternative to cloud-based solutions. The initial tests with the MCP server  
+eventually led to the officially supported Exasol MCP server, where both solutions finally  
+shared the same code base, The "GovernedSQL" version with additional tools.  
+  
+
+Saying this, we have decided to continue with the official MCP Server only. It offers  
+all we need to create solutions for Conversational AI in an agentic fashion. Our tests  
+showed us that the results are equally or better than our experimental MCP Server with  
+Governed-SQL.  
+
+You find the Exasol MCP Server on our github page:
+
+[https://github.com/exasol/mcp-server](Exasol MCP Server)
+
+Happy Exasoling!
+
+
+
 # Exasol MCP Server with Governed SQL option
 
 <p align="center">
@@ -48,6 +77,15 @@ of the official server, but hooks into it. The full functionality of the origina
 Do not install both server, or activate both servers as this will lead into problems.
 
 ## Version history
+
+__Version 1.6.2.4__:
+
+- Enhancements and bug fixes (nothing user visible, no added functionality)
+__Version 1.6.2.3__:
+
+- Adaption to changed structure of native Exasol MCP Server
+- Relevance Check now optional, to be configured via ENVIRONMENT variable
+- Bug Fixes
 
 __Version 1.5.0.2__:
 
@@ -274,6 +312,7 @@ EXA_MCP_LLM_SERVER_URL=<URL for LLM server>
 EXA_MCP_LLM_SERVER_API_KEY=not-needed
 EXA_MCP_LLM_TRANSFORMATION=<LLM to be used>
 EXA_MCP_LLM_RENDERING=<LLM to be used>
+EXA_MCP_LLM_RELEVANCE_CHECK: "true" 
 EXA_MCP_LLM_TEMPERATURE_RELEVANCE=0.0
 EXA_MCP_LLM_TEMPERATURE_TRANSLATION=0.0
 EXA_MCP_LLM_TEMPERATURE_QUERY_REWRITE=0.4
